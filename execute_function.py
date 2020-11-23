@@ -1,43 +1,39 @@
 import angr
 import claripy
-
-def sym_i64():
-    pass
-def sym_i32():
-    pass
-def sym_i8():
-    pass
-def sym_str():
-    pass
-
-def get_function_state(binary, name, *args):
-    sym = binary.loader.main_object.get_symbol(name)
-    if sym == None:
-        print("Unable to find symbol " + name)
-        return None
-
-    return binary.factory.call_state(sym.rebased_addr, args)
-
-buf = claripy.BVS("query", 1024)
-def on_break(state):
-    global buf
-    print("Oh no!")
-    l = list(state.solver.get_variables())
-    for v in l:
-        val = state.solver.eval(v[1])
-        print(str(v[0]) + ": " + str(val))
-    print("Buffer: " + str(state.solver.eval(buf)))
-
-def can_violate(state):
-    print(list(state.solver.get_variables()))
-    return True
+import archinfo
 
 binary = angr.Project("./test")
-buf = claripy.BVS("query", 1024)
-state = binary.factory.call_state(binary.loader.find_symbol("execute_query").rebased_addr, args=[buf])
-state.inspect.b("mem_read", when=angr.BP_BEFORE, action=on_break, mem_read_address=binary.loader.find_symbol("password").rebased_addr)
+
+inp = claripy.BVS("input", 128)
+
+def read_global(state, name, byte_cnt=8):
+    global binary
+    addr = binary.loader.find_symbol(name).rebased_addr
+    memory = state.memory.load(addr, byte_cnt, disable_actions=True, inspect=False)
+    return memory
+
+no_reads = {
+    "secret": lambda state: (0 == read_global(state, "allowed", 1))
+}
+
+def on_break(state):
+    for no_read in no_reads:
+        cond = no_reads[no_read](state)
+        addr = binary.loader.find_symbol(no_read).rebased_addr
+        cpy = state.copy()
+        cpy.solver.add(state.inspect.mem_read_address == addr)
+        cpy.solver.add(cond)
+        if cpy.solver.satisfiable():
+            print("Illegal memory address " + hex(addr) + " accessed")
+            concrete_addr = cpy.solver.eval(state.inspect.mem_read_address)
+            print("    Data contained: " + str(cpy.memory.load(concrete_addr, 8, disable_actions=True, inspect=False, endness=archinfo.Endness.LE)))
+            print("    Accessing instruction address: " + str(cpy.regs.rip))
+            concrete_input = cpy.solver.eval(inp)
+            print("    Input responsible: " + str(concrete_input.to_bytes(int(concrete_input.bit_length() / 8 + 1), "big")))
+
+state = binary.factory.full_init_state(argc=2, args=["test", inp])
+state.inspect.b("mem_read", when=angr.BP_AFTER, action=lambda state: on_break(state))
 sim = binary.factory.simgr(state)
-states = sim.run().deadended
+states = sim.explore().deadended
 for s in states:
-    print("Eval: " + str(s.solver.eval(buf)))
-    can_violate(s)
+    print(hex(s.solver.eval(inp)))

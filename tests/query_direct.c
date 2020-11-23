@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 
-const char* password = "secret123";
-char is_admin = 0;
+const char* secret = "secret123";
+char allowed = 0;
 
-// INVARIANT(is_admin, password): READ(password) -> is_admin
+// INVARIANT(allowed, password): READ(password) -> allowed
 void execute_query(const char* query){
 	if(strstr(query, "secret")){
-		if(is_admin){
-			puts(password);
+		if(allowed){
+			puts(secret);
 		} else {
 			puts("not admin");
 		}
@@ -16,15 +16,16 @@ void execute_query(const char* query){
 
 	const char* ptr = strstr(query, "lookup");
 	if(ptr){
-		puts(password);
+		puts(secret);
 	}
 }
 
 int main(int argc, char** argv){
 	if(argc != 2){
-		printf("Usage: %s <query>\n", argv[0]);
+		printf("Usage: %s <query> <password>\n", argv[0]);
 	} else {
-		execute_query(argv[1]);
+		allowed = *argv[1] != 'g';
+		execute_query(argv[1] + 1);
 	}
 	return 0;
 }
