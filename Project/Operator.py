@@ -35,6 +35,7 @@ def deref_type(type1):
     return ExprType(type1.t, type1.pointers - 1)
 
 def compute_next(state, ast):
+    print(state.inspect.mem_write_expr)
     raise NotImplementedError()
 
 class Operator:
@@ -163,6 +164,12 @@ class Operator:
         eval_variable
         lambda operands: operands[1],
         3)
+
+    LITERAL = Operator(
+        lambda operands: operands[0],
+        lambda operands, state: operands[0]
+        lambda operands: operands[1],
+        2)
     
     NEXT = Operator(
         lambda operands: "NEXT(" + operands[0] + ")",

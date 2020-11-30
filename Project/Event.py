@@ -34,7 +34,7 @@ class ReadEvent(Event):
     subscribed = False
     read_events = []
 
-    def __init__(self, name, general_constraint, stmt):
+    def __init__(self, name, scope, general_constraint, stmt):
         super().__init__(scope, general_constraint, stmt)
         self.name = name
 

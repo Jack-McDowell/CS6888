@@ -14,14 +14,14 @@ class ASTNode:
 
     def stringify(self):
         if self.string_representation == None:
-            children = [child.stringify() for child in self.operands]
+            children = [child.stringify() if type(child) is ASTNode else child for child in self.operands]
             self.string_representation = self.operator.output(children)
         
         return self.string_representation
 
     def get_type(self):
         if self.type == None:
-            children = [child.get_type() for child in self.operands]
+            children = [child.get_type() if type(child) is ASTNode else child for child in self.operands]
             self.type = self.operator.typer(children)
         
         return self.type
