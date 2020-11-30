@@ -4,13 +4,13 @@ from AST import ASTNode
 from Operator import Operator
 from Event import Event, ReadEvent
 
-import angr
+import angr, claripy
 
 proj = angr.Project("../test")
 testscope = GlobalScope(proj)
 
 # Creating the general condition
-var_name = "is_allowed"
+var_name = "allowed"
 var_type = ExprType(Type.BV8, 0)
 var_scope = testscope
 var_node = ASTNode(Operator.VAR, [var_name, var_type, var_scope])
@@ -23,7 +23,7 @@ evt = ReadEvent("secret", testscope, cond, "READ(secret) -> is_allowed == 1")
 
 # Prepare the project
 inp = claripy.BVS("input", 128)
-state = binary.factory.full_init_state(argc=2, args=["test", inp])
+state = proj.factory.full_init_state(argc=2, args=["test", inp])
 evt.subscribe(state)
-simulation = project.factory.simgr(state)
+simulation = proj.factory.simgr(state)
 simulation.explore()

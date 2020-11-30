@@ -19,9 +19,9 @@ class ExprType:
         assert(not self.t == Type.BOOL)
 
         if self.pointers > 1:
-            return 64
+            return 8
         elif self.pointers == 1:
-            return 4 * (2 ** self.t)
+            return 2 ** (self.t.value - 1)
 
 def bigger_int(type1, type2):
     assert(type1.pointers == 0 and not type1.t == Type.BOOL)

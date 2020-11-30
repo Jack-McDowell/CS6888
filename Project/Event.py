@@ -20,16 +20,13 @@ class Event:
     def breakpoint(events, state):
         for event in events:
             event_cond = event.get_event_condition(state)
-            if type(event_cond) is bool:
-                if not event_cond:
-                    continue
-            
+            if (type(event_cond) is bool and not event_cond) or state.solver.is_false(event_cond):
+                continue
             tmp_state = state.copy()
             tmp_state.solver.add(event_cond)
-            tmp_state.solver.add(not general_constraint.get_sym(state))
+            tmp_state.solver.add(event.general_constraint.get_sym(state) == False)
             if tmp_state.solver.satisfiable():
                 handle_violation(tmp_state, event)
-
 class ReadEvent(Event):
     subscribed = False
     read_events = []
@@ -39,7 +36,7 @@ class ReadEvent(Event):
         self.name = name
 
     def subscribe(self, state):
-        read_events.append(self)
+        ReadEvent.read_events.append(self)
         if not ReadEvent.subscribed:
             ReadEvent.subscribed = True
             state.inspect.b("mem_read", when=angr.BP_BEFORE, 
@@ -60,7 +57,7 @@ class WriteEvent(Event):
         self.name = name
 
     def subscribe(self, state):
-        write_events.append(self)
+        WriteEvent.write_events.append(self)
         if not WriteEvent.subscribed:
             WriteEvent.subscribed = True
             state.inspect.b("mem_write", when=angr.BP_BEFORE, 
@@ -81,7 +78,7 @@ class CallEvent(Event):
         self.name = name
 
     def subscribe(self, state):
-        call_events.append(self)
+        CallEvent.call_events.append(self)
         if not CallEvent.subscribed:
             CallEvent.subscribed = True
             state.inspect.b("call", when=angr.BP_BEFORE, 
@@ -100,7 +97,7 @@ class ReturnEvent:
     ret_events = []
 
     def subscribe(self, state):
-        ret_events.append(self)
+        ReturnEvent.ret_events.append(self)
         if not ReturnEvent.subscribed:
             ReturnEvent.subscribed = True
             state.inspect.b("return", when=angr.BP_BEFORE, 
@@ -113,7 +110,7 @@ class AlwaysEvent:
     subscribed = False
     always_events = []
     def subscribe(self, state):
-        always_events.append(self)
+        AlwaysEvent.always_events.append(self)
         if not AlwaysEvent.subscribed:
             AlwaysEvent.subscribed = True
             state.inspect.b("mem_write", when=angr.BP_AFTER, 

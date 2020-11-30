@@ -17,6 +17,7 @@ no_reads = {
 }
 
 def on_break(state):
+    print("Break")
     for no_read in no_reads:
         cond = no_reads[no_read](state)
         addr = binary.loader.find_symbol(no_read).rebased_addr

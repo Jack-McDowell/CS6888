@@ -1,4 +1,4 @@
-from operator import Operator, ExprType
+from Operator import Operator, ExprType
 
 class ASTNode:
     def __init__(self, operator, operands):
@@ -14,7 +14,7 @@ class ASTNode:
 
     def stringify(self):
         if self.string_representation == None:
-            children = [child.stringify() if type(child) is ASTNode else child for child in self.operands]
+            children = [child.stringify() if type(child) is ASTNode else str(child) for child in self.operands]
             self.string_representation = self.operator.output(children)
         
         return self.string_representation
