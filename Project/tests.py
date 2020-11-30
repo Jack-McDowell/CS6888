@@ -1,8 +1,8 @@
-import Scope, GlobalScope
-import Type, ExprType
-import ASTNode
-import Operator
-import Event, ReadEvent
+from varparse import Scope, GlobalScope
+from Operator import Type, ExprType
+from AST import ASTNode
+from Operator import Operator
+from Event import Event, ReadEvent
 
 import angr
 

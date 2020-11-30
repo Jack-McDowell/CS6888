@@ -1,7 +1,5 @@
 import angr
 
-import ExprType
-
 class Scope:
     def __init__(self, project):
         self.project = project

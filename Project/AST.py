@@ -1,4 +1,4 @@
-import Operator, ExprType
+from operator import Operator, ExprType
 
 class ASTNode:
     def __init__(self, operator, operands):

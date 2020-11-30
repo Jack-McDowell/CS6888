@@ -1,4 +1,4 @@
-import Scope
+from varparse import Scope
 import angr
 
 def handle_violation(state, event):
@@ -19,14 +19,14 @@ class Event:
     @staticmethod
     def breakpoint(events, state):
         for event in events:
-            event_cond = get_event_condition(tmp_state)
+            event_cond = event.get_event_condition(state)
             if type(event_cond) is bool:
                 if not event_cond:
                     continue
             
             tmp_state = state.copy()
-            tmp_state.solver.add(get_event_condition(tmp_state))
-            tmp_state.solver.add(not general_constraint.get_sym(tmp_state))
+            tmp_state.solver.add(event_cond)
+            tmp_state.solver.add(not general_constraint.get_sym(state))
             if tmp_state.solver.satisfiable():
                 handle_violation(tmp_state, event)
 
@@ -40,10 +40,10 @@ class ReadEvent(Event):
 
     def subscribe(self, state):
         read_events.append(self)
-        if not subscribed:
-            subscribed = True
+        if not ReadEvent.subscribed:
+            ReadEvent.subscribed = True
             state.inspect.b("mem_read", when=angr.BP_BEFORE, 
-                            action=lambda state: Event.breakpoint(read_events, state))
+                            action=lambda state: Event.breakpoint(ReadEvent.read_events, state))
 
     def get_event_condition(self, state):
         if self.scope.state_in_scope(state):
@@ -61,10 +61,10 @@ class WriteEvent(Event):
 
     def subscribe(self, state):
         write_events.append(self)
-        if not subscribed:
-            subscribed = True
+        if not WriteEvent.subscribed:
+            WriteEvent.subscribed = True
             state.inspect.b("mem_write", when=angr.BP_BEFORE, 
-                            action=lambda state: Event.breakpoint(write_events, state))
+                            action=lambda state: Event.breakpoint(WriteEvent.write_events, state))
 
     def get_event_condition(self, state):
         if self.scope.state_in_scope(state):
@@ -82,10 +82,10 @@ class CallEvent(Event):
 
     def subscribe(self, state):
         call_events.append(self)
-        if not subscribed:
-            subscribed = True
+        if not CallEvent.subscribed:
+            CallEvent.subscribed = True
             state.inspect.b("call", when=angr.BP_BEFORE, 
-                            action=lambda state: Event.breakpoint(call_events, state))
+                            action=lambda state: Event.breakpoint(CallEvent.call_events, state))
 
     def get_event_condition(self, state):
         if self.scope.state_in_scope(state):
@@ -101,14 +101,25 @@ class ReturnEvent:
 
     def subscribe(self, state):
         ret_events.append(self)
-        if not subscribed:
-            subscribed = True
+        if not ReturnEvent.subscribed:
+            ReturnEvent.subscribed = True
             state.inspect.b("return", when=angr.BP_BEFORE, 
-                            action=lambda state: Event.breakpoint(return_events, state))
+                            action=lambda state: Event.breakpoint(ReturnEvent.return_events, state))
 
     def get_event_condition(self, state):
         return True
 
-class AlwaysEvent(WriteEvent):
+class AlwaysEvent:
+    subscribed = False
+    always_events = []
+    def subscribe(self, state):
+        always_events.append(self)
+        if not AlwaysEvent.subscribed:
+            AlwaysEvent.subscribed = True
+            state.inspect.b("mem_write", when=angr.BP_AFTER, 
+                            action=lambda state: Event.breakpoint(AlwaysEvent.always_events, state))
+            state.inspect.b("call", when=angr.BP_AFTER, 
+                            action=lambda state: Event.breakpoint(AlwaysEvent.always_events, state))
+    
     def get_event_condition(self, state):
         return True

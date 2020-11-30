@@ -1,6 +1,6 @@
 from enum import Enum
 import angr
-import eval_variable
+from varparse import eval_variable
 
 class Type(Enum):
     BOOL = 0
@@ -146,7 +146,7 @@ class Operator:
         lambda operands, state: 
             state.memory.load(operands[0].get_sym(state), 
                               operands[0].get_type().get_pointed_size(),
-                              disable_actions=True, inspect=False)
+                              disable_actions=True, inspect=False),
         lambda operands: deref_type(operands[0]),
         1)
 
@@ -155,30 +155,30 @@ class Operator:
         lambda operands, state: 
             state.memory.load(operands[0].get_sym(state) + operands[0].get_type().get_pointed_size() * operands[1].get_sym(state), 
                               operands[0].get_type().get_pointed_size(),
-                              disable_actions=True, inspect=False)
+                              disable_actions=True, inspect=False),
         lambda operands: deref_type(operands[0]),
         2)
 
     VAR = Operator(
         lambda operands: operands[0],
-        eval_variable
+        eval_variable,
         lambda operands: operands[1],
         3)
 
     LITERAL = Operator(
         lambda operands: operands[0],
-        lambda operands, state: operands[0]
+        lambda operands, state: operands[0],
         lambda operands: operands[1],
         2)
     
     NEXT = Operator(
         lambda operands: "NEXT(" + operands[0] + ")",
-        lambda operands, state: compute_next(state, operands[0])
+        lambda operands, state: compute_next(state, operands[0]),
         lambda operands: operands[0],
         1)
 
     RETN = Operator(
         lambda operands: "RETURN_VAL()",
-        lambda operands, state: state.regs.rax
+        lambda operands, state: state.regs.rax,
         lambda operands: operands[0],
         1)
