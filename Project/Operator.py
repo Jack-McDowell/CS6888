@@ -34,6 +34,8 @@ def deref_type(type1):
 
     return ExprType(type1.t, type1.pointers - 1)
 
+def compute_next(state, ast):
+    raise NotImplementedError()
 
 class Operator:
     def __init__(self, output, angrify, typer, operands):
@@ -161,3 +163,15 @@ class Operator:
         eval_variable
         lambda operands: operands[1],
         3)
+    
+    NEXT = Operator(
+        lambda operands: "NEXT(" + operands[0] + ")",
+        lambda operands, state: compute_next(state, operands[0])
+        lambda operands: operands[0],
+        1)
+
+    RETN = Operator(
+        lambda operands: "RETURN_VAL()",
+        lambda operands, state: state.regs.rax
+        lambda operands: operands[0],
+        1)
