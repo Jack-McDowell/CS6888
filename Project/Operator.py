@@ -1,4 +1,6 @@
 from enum import Enum
+import angr
+import eval_variable
 
 class Type(Enum):
     BOOL = 0
@@ -31,6 +33,7 @@ def deref_type(type1):
     assert(type1.pointers > 0)
 
     return ExprType(type1.t, type1.pointers - 1)
+
 
 class Operator:
     def __init__(self, output, angrify, typer, operands):
@@ -145,10 +148,16 @@ class Operator:
         1)
 
     INDEX = Operator(
-        lambda operands: "&(" + operands[0] + ")",
+        lambda operands: "(" + operands[0] + ")[" + operands[1] + "]",
         lambda operands, state: 
             state.memory.load(operands[0].get_sym(state) + operands[0].get_type().get_pointed_size() * operands[1].get_sym(state), 
                               operands[0].get_type().get_pointed_size(),
                               disable_actions=True, inspect=False)
         lambda operands: deref_type(operands[0]),
         2)
+
+    VAR = Operator(
+        lambda operands: operands[0],
+        eval_variable
+        lambda operands: operands[1],
+        3)
