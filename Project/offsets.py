@@ -154,7 +154,3 @@ def get_var_name(filename, function_name, offset):
                                                     right_loc = True
                                 if right_loc:
                                     return name
-
-if __name__ == '__main__':
-    print(get_var_name("tests\\test", b'execute_query', -24))
-    print(get_var_offset("tests\\test", b'execute_query', b'query'))
