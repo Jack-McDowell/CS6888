@@ -45,140 +45,163 @@ class Operator:
         self.typer = typer
         self.operands = operands
 
-    PLUS = Operator(
-        lambda operands: "(" + operands[0] + " + " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) + operands[1].get_sym(state),
-        lambda operands: bigger_int(operands[0], operands[1]),
-        2)
+    PLUS = None
+    MINUS = None
+    TIMES = None
+    DIVIDE = None
+    EXP = None
+    BAND = None
+    BOR = None
+    BXOR = None
+    EQ = None
+    NEQ = None
+    GT = None
+    LT = None
+    GE = None
+    LE = None
+    LOR = None
+    LAND = None
+    DEREF = None
+    INDEX = None
+    VAR = None
+    NEXT = None
+    LITERAL = None
+    RETN = None
 
-    MINUS = Operator(
-        lambda operands: "(" + operands[0] + " - " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) - operands[1].get_sym(state),
-        lambda operands: bigger_int(operands[0], operands[1]),
-        2)
+Operator.PLUS = Operator(
+    lambda operands: "(" + operands[0] + " + " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) + operands[1].get_sym(state),
+    lambda operands: bigger_int(operands[0], operands[1]),
+    2)
 
-    TIMES = Operator(
-        lambda operands: "(" + operands[0] + " * " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) * operands[1].get_sym(state),
-        lambda operands: bigger_int(operands[0], operands[1]),
-        2)
+Operator.MINUS = Operator(
+    lambda operands: "(" + operands[0] + " - " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) - operands[1].get_sym(state),
+    lambda operands: bigger_int(operands[0], operands[1]),
+    2)
 
-    DIVIDE = Operator(
-        lambda operands: "(" + operands[0] + " / " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) / operands[1].get_sym(state),
-        lambda operands: bigger_int(operands[0], operands[1]),
-        2)
+Operator.TIMES = Operator(
+    lambda operands: "(" + operands[0] + " * " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) * operands[1].get_sym(state),
+    lambda operands: bigger_int(operands[0], operands[1]),
+    2)
 
-    EXP = Operator(
-        lambda operands: "(" + operands[0] + " ** " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) ** operands[1].get_sym(state),
-        lambda operands: bigger_int(operands[0], operands[1]),
-        2)
+Operator.DIVIDE = Operator(
+    lambda operands: "(" + operands[0] + " / " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) / operands[1].get_sym(state),
+    lambda operands: bigger_int(operands[0], operands[1]),
+    2)
 
-    BAND = Operator(
-        lambda operands: "(" + operands[0] + " & " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) & operands[1].get_sym(state),
-        lambda operands: bigger_int(operands[0], operands[1]),
-        2)
+Operator.EXP = Operator(
+    lambda operands: "(" + operands[0] + " ** " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) ** operands[1].get_sym(state),
+    lambda operands: bigger_int(operands[0], operands[1]),
+    2)
 
-    BOR = Operator(
-        lambda operands: "(" + operands[0] + " | " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) | operands[1].get_sym(state),
-        lambda operands: bigger_int(operands[0], operands[1]),
-        2)
+Operator.BAND = Operator(
+    lambda operands: "(" + operands[0] + " & " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) & operands[1].get_sym(state),
+    lambda operands: bigger_int(operands[0], operands[1]),
+    2)
 
-    BXOR = Operator(
-        lambda operands: "(" + operands[0] + " ^ " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) | operands[1].get_sym(state),
-        lambda operands: bigger_int(operands[0], operands[1]),
-        2)
+Operator.BOR = Operator(
+    lambda operands: "(" + operands[0] + " | " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) | operands[1].get_sym(state),
+    lambda operands: bigger_int(operands[0], operands[1]),
+    2)
 
-    EQ = Operator(
-        lambda operands: "(" + operands[0] + " == " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) == operands[1].get_sym(state),
-        lambda operands: Type.BOOL,
-        2)
+Operator.BXOR = Operator(
+    lambda operands: "(" + operands[0] + " ^ " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) | operands[1].get_sym(state),
+    lambda operands: bigger_int(operands[0], operands[1]),
+    2)
 
-    NEQ = Operator(
-        lambda operands: "(" + operands[0] + " != " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) != operands[1].get_sym(state),
-        lambda operands: Type.BOOL,
-        2)
+Operator.EQ = Operator(
+    lambda operands: "(" + operands[0] + " == " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) == operands[1].get_sym(state),
+    lambda operands: Type.BOOL,
+    2)
 
-    GT = Operator(
-        lambda operands: "(" + operands[0] + " > " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) > operands[1].get_sym(state),
-        lambda operands: Type.BOOL,
-        2)
+Operator.NEQ = Operator(
+    lambda operands: "(" + operands[0] + " != " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) != operands[1].get_sym(state),
+    lambda operands: Type.BOOL,
+    2)
 
-    LT = Operator(
-        lambda operands: "(" + operands[0] + " < " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) < operands[1].get_sym(state),
-        lambda operands: Type.BOOL,
-        2)
+Operator.GT = Operator(
+    lambda operands: "(" + operands[0] + " > " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) > operands[1].get_sym(state),
+    lambda operands: Type.BOOL,
+    2)
 
-    GE = Operator(
-        lambda operands: "(" + operands[0] + " >= " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) >= operands[1].get_sym(state),
-        lambda operands: Type.BOOL,
-        2)
+Operator.LT = Operator(
+    lambda operands: "(" + operands[0] + " < " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) < operands[1].get_sym(state),
+    lambda operands: Type.BOOL,
+    2)
 
-    LE = Operator(
-        lambda operands: "(" + operands[0] + " <= " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) <= operands[1].get_sym(state),
-        lambda operands: Type.BOOL,
-        2)
+Operator.GE = Operator(
+    lambda operands: "(" + operands[0] + " >= " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) >= operands[1].get_sym(state),
+    lambda operands: Type.BOOL,
+    2)
 
-    LOR = Operator(
-        lambda operands: "(" + operands[0] + " || " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) or operands[1].get_sym(state),
-        lambda operands: Type.BOOL,
-        2)
+Operator.LE = Operator(
+    lambda operands: "(" + operands[0] + " <= " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) <= operands[1].get_sym(state),
+    lambda operands: Type.BOOL,
+    2)
 
-    LAND = Operator(
-        lambda operands: "(" + operands[0] + " && " + operands[1] + ")",
-        lambda operands, state: operands[0].get_sym(state) and operands[1].get_sym(state),
-        lambda operands: Type.BOOL,
-        2)
+Operator.LOR = Operator(
+    lambda operands: "(" + operands[0] + " || " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) or operands[1].get_sym(state),
+    lambda operands: Type.BOOL,
+    2)
 
-    DEREF = Operator(
-        lambda operands: "*(" + operands[0] + ")",
-        lambda operands, state: 
-            state.memory.load(operands[0].get_sym(state), 
-                              operands[0].get_type().get_pointed_size(),
-                              disable_actions=True, inspect=False),
-        lambda operands: deref_type(operands[0]),
-        1)
+Operator.LAND = Operator(
+    lambda operands: "(" + operands[0] + " && " + operands[1] + ")",
+    lambda operands, state: operands[0].get_sym(state) and operands[1].get_sym(state),
+    lambda operands: Type.BOOL,
+    2)
 
-    INDEX = Operator(
-        lambda operands: "(" + operands[0] + ")[" + operands[1] + "]",
-        lambda operands, state: 
-            state.memory.load(operands[0].get_sym(state) + operands[0].get_type().get_pointed_size() * operands[1].get_sym(state), 
-                              operands[0].get_type().get_pointed_size(),
-                              disable_actions=True, inspect=False),
-        lambda operands: deref_type(operands[0]),
-        2)
+Operator.DEREF = Operator(
+    lambda operands: "*(" + operands[0] + ")",
+    lambda operands, state: 
+        state.memory.load(operands[0].get_sym(state), 
+                            operands[0].get_type().get_pointed_size(),
+                            disable_actions=True, inspect=False),
+    lambda operands: deref_type(operands[0]),
+    1)
 
-    VAR = Operator(
-        lambda operands: operands[0],
-        eval_variable,
-        lambda operands: operands[1],
-        3)
+Operator.INDEX = Operator(
+    lambda operands: "(" + operands[0] + ")[" + operands[1] + "]",
+    lambda operands, state: 
+        state.memory.load(operands[0].get_sym(state) + operands[0].get_type().get_pointed_size() * operands[1].get_sym(state), 
+                            operands[0].get_type().get_pointed_size(),
+                            disable_actions=True, inspect=False),
+    lambda operands: deref_type(operands[0]),
+    2)
 
-    LITERAL = Operator(
-        lambda operands: operands[0],
-        lambda operands, state: operands[0],
-        lambda operands: operands[1],
-        2)
-    
-    NEXT = Operator(
-        lambda operands: "NEXT(" + operands[0] + ")",
-        lambda operands, state: compute_next(state, operands[0]),
-        lambda operands: operands[0],
-        1)
+Operator.VAR = Operator(
+    lambda operands: operands[0],
+    eval_variable,
+    lambda operands: operands[1],
+    3)
 
-    RETN = Operator(
-        lambda operands: "RETURN_VAL()",
-        lambda operands, state: state.regs.rax,
-        lambda operands: operands[0],
-        1)
+Operator.LITERAL = Operator(
+    lambda operands: operands[0],
+    lambda operands, state: operands[0],
+    lambda operands: operands[1],
+    2)
+
+Operator.NEXT = Operator(
+    lambda operands: "NEXT(" + operands[0] + ")",
+    lambda operands, state: compute_next(state, operands[0]),
+    lambda operands: operands[0],
+    1)
+
+Operator.RETN = Operator(
+    lambda operands: "RETURN_VAL()",
+    lambda operands, state: state.regs.rax,
+    lambda operands: operands[0],
+    1)
