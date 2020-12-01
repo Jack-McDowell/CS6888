@@ -1,5 +1,7 @@
 import angr
 
+from elfparse import get_function_bounds, get_var_stack_offset
+
 class Scope:
     def __init__(self, project):
         self.project = project
@@ -20,8 +22,23 @@ class GlobalScope(Scope):
         return True
 
 class FunctionScope(Scope):
+    def __init__(self, project, function_name):
+        super().__init__(self, project)
+        self.base, self.end = get_function_bounds(function_name)
+        self.func = function_name
+
     def eval_variable_address(self, state, name):
-        pass
+        frame = get_stack_frame(self, state)
+        return frame.stack_pointer + get_var_stack_offset(self.project, self.func, name)
+
+    def state_in_scope(self, state):
+        return not self.get_stack_frame(state) == None
+
+    def get_stack_frame(self, state):
+        for callsite in state.callstack:
+            if callsite == self.base: # TODO: Treat as symbolic?
+                return callsite
+        return None
 
 def eval_variable(operands, state):
     var_name = operands[0]
