@@ -3,6 +3,7 @@ from Operator import Type, ExprType
 from AST import ASTNode
 from Operator import Operator
 from Event import Event, ReadEvent
+from engine import Engine
 
 import angr, claripy
 
@@ -22,8 +23,5 @@ print("General Constraint: " + cond.stringify())
 evt = ReadEvent("secret", testscope, cond, "READ(secret) -> is_allowed == 1")
 
 # Prepare the project
-inp = claripy.BVS("input", 128)
-state = proj.factory.full_init_state(argc=2, args=["test", inp])
-evt.subscribe(state)
-simulation = proj.factory.simgr(state)
-simulation.explore()
+engine = Engine(proj, [evt])
+engine.run()
