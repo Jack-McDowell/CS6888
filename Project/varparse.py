@@ -1,4 +1,4 @@
-import angr
+import angr, archinfo
 
 from elfparse import get_function_bounds, get_var_stack_offset
 
@@ -40,7 +40,7 @@ class FunctionScope(Scope):
                 return callsite
         return None
 
-def eval_variable(operands, state):
+def eval_variable(operands, state, lval=False):
     var_name = operands[0]
     var_type = operands[1]
     var_scope = operands[2]
@@ -48,4 +48,4 @@ def eval_variable(operands, state):
     addr = var_scope.eval_variable_address(state, var_name)
     size = 8 if var_type.pointers > 0 else 2 ** (var_type.t.value - 1)
 
-    return state.memory.load(addr, size, disable_actions=True, inspect=False)
+    return addr if lval else state.memory.load(addr, size, disable_actions=True, inspect=False, endness=archinfo.Endness.LE)

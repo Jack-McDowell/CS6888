@@ -2,7 +2,7 @@ from varparse import Scope
 import angr
 
 class Event:
-    def __init__(self, engine, scope, general_constraint, stmt):
+    def __init__(self, scope, general_constraint, stmt):
         self.scope = scope
         self.general_constraint = general_constraint
         self.stmt = stmt
@@ -33,20 +33,20 @@ class ReadEvent(Event):
     subscribed = False
     events = []
 
-    def __init__(self, name, scope, general_constraint, stmt):
+    def __init__(self, ast, scope, general_constraint, stmt):
         super().__init__(scope, general_constraint, stmt)
-        self.name = name
+        self.ast = ast
 
     def subscribe(self, state):
         ReadEvent.events.append(self)
         if not ReadEvent.subscribed:
             ReadEvent.subscribed = True
             state.inspect.b("mem_read", when=angr.BP_BEFORE, 
-                            action=lambda state: Event.breakpoint(ReadEvent.events, state))
+                            action=lambda state: Event.breakpoint(self, state))
 
     def get_event_condition(self, state):
         if self.scope.state_in_scope(state):
-            return state.inspect.mem_read_address == self.scope.eval_variable_address(state, self.name)
+            return state.inspect.mem_read_address == self.ast.get_sym(state, True)
         else:
             return False
 
@@ -54,20 +54,20 @@ class WriteEvent(Event):
     subscribed = False
     events = []
 
-    def __init__(self, name, scope, general_constraint, stmt):
+    def __init__(self, ast, scope, general_constraint, stmt):
         super().__init__(scope, general_constraint, stmt)
-        self.name = name
+        self.ast = ast
 
     def subscribe(self, state):
         WriteEvent.events.append(self)
         if not WriteEvent.subscribed:
             WriteEvent.subscribed = True
             state.inspect.b("mem_write", when=angr.BP_BEFORE, 
-                            action=lambda state: Event.breakpoint(WriteEvent.events, state))
+                            action=lambda state: Event.breakpoint(self, state))
 
     def get_event_condition(self, state):
         if self.scope.state_in_scope(state):
-            return state.inspect.mem_read_address == self.scope.eval_variable_address(state, self.name)
+            return state.inspect.mem_write_address == self.ast.get_sym(state, True)
         else:
             return False
 
@@ -84,7 +84,7 @@ class CallEvent(Event):
         if not CallEvent.subscribed:
             CallEvent.subscribed = True
             state.inspect.b("call", when=angr.BP_BEFORE, 
-                            action=lambda state: Event.breakpoint(CallEvent.events, state))
+                            action=lambda state: Event.breakpoint(self, state))
 
     def get_event_condition(self, state):
         if self.scope.state_in_scope(state):
@@ -103,7 +103,7 @@ class ReturnEvent:
         if not ReturnEvent.subscribed:
             ReturnEvent.subscribed = True
             state.inspect.b("return", when=angr.BP_BEFORE, 
-                            action=lambda state: Event.breakpoint(ReturnEvent.events, state))
+                            action=lambda state: Event.breakpoint(self, state))
 
     def get_event_condition(self, state):
         return True
@@ -116,9 +116,9 @@ class AlwaysEvent:
         if not AlwaysEvent.subscribed:
             AlwaysEvent.subscribed = True
             state.inspect.b("mem_write", when=angr.BP_AFTER, 
-                            action=lambda state: Event.breakpoint(AlwaysEvent.events, state))
+                            action=lambda state: Event.breakpoint(self, state))
             state.inspect.b("call", when=angr.BP_AFTER, 
-                            action=lambda state: Event.breakpoint(AlwaysEvent.events, state))
+                            action=lambda state: Event.breakpoint(self, state))
     
     def get_event_condition(self, state):
         return True

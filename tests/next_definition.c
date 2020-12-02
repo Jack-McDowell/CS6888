@@ -1,6 +1,7 @@
-int UID = 0;
+int UID = 1;
+int* pUID = &UID;
 
-// INVARIANT(UID): WRITE(UID) -> NEXT(UID) >= UID
+// INVARIANT(pUID): WRITE(*pUID) -> NEXT(*pUID) >= *pUID
 int get_new_id(char c){
 	if(c == 's'){
 		UID -= 1;

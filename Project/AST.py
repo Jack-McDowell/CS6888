@@ -9,8 +9,8 @@ class ASTNode:
         self.type = None
         self.string_representation = None
     
-    def get_sym(self, state):
-        return self.operator.angrify(self.operands, state)
+    def get_sym(self, state, lval=False):
+        return self.operator.angrify(self.operands, state, lval)
 
     def stringify(self):
         if self.string_representation == None:
@@ -19,9 +19,9 @@ class ASTNode:
         
         return self.string_representation
 
-    def get_type(self):
+    def get_type(self, lval=False):
         if self.type == None:
             children = [child.get_type() if type(child) is ASTNode else child for child in self.operands]
-            self.type = self.operator.typer(children)
+            self.type = self.operator.typer(children, lval)
         
         return self.type
