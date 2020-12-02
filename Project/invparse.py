@@ -6,12 +6,13 @@ Global invariants can be assigned in a section bracketed by
 global invariants go here
 // END GLOBAL INVARIANTS
 """
-from Project.Grammar.invariantParser import invariantParser as InvariantParser
-from Project.Grammar.invariantLexer import invariantLexer as InvariantLexer
+from Grammar.invariantParser import invariantParser as InvariantParser
+from Grammar.invariantLexer import invariantLexer as InvariantLexer
 from antlr4 import InputStream, CommonTokenStream, ParseTreeWalker, ParseTreeListener, ParserRuleContext
-from Project.AST import ASTNode
-from Project.Operator import Operator, Type, ExprType
-from Project.varparse import GlobalScope, FunctionScope
+from AST import ASTNode
+from Operator import Operator, Type, ExprType
+from varparse import GlobalScope, FunctionScope
+import Event as Event
 import re
 
 
@@ -45,13 +46,26 @@ class Invariant:
         tree = parser.expr(0)
         # Parse the tree to create AST
         self.ast = parse_tree(tree, self.vars)
-        gc_reg = '(READ|WRITE|CALL)\((.*)\)'
-        gc_match = re.match(gc_reg, parts[0].strip())
-        print(parts[0])
-        gc_expr = gc_match.group(2)
-        event = gc_match.group(1)
-        print(gc_expr)
-        print(event)
+        con_reg = '(READ|WRITE|CALL|RETURN|ALWAYS)\((.*)\)'
+        con_match = re.match(con_reg, parts[0].strip())
+        assert(con_match is not None)
+        con_expr = con_match.group(2)
+        event = con_match.group(1)
+        if event == 'READ' or event == 'WRITE':
+            con_stream = InputStream(con_expr)
+            con_lex_stream = InvariantLexer(con_stream)
+            con_parser = InvariantParser(CommonTokenStream(con_lex_stream))
+            con_tree = con_parser.expr(0)
+            # Parse the tree to create AST
+            con_ast = parse_tree(con_tree, self.vars)
+            if event == 'READ':
+                self.event = Event.ReadEvent(con_ast, self.scope, self.ast, self.str_expr)
+            else:
+                self.event = Event.WriteEvent(con_ast, self.scope, self.ast, self.str_expr)
+        elif event == "CALL":
+            self.event = Event.CallEvent(con_expr, self.scope, self.ast, self.str_expr)
+        #TODO: Handle return and always
+
 
 
 def parse_tree(tree, variables):
@@ -186,10 +200,5 @@ def parse_invariants(file_name, project):
                 inv_scope = GlobalScope(project)
                 invariant = Invariant(inv_scope, variables, expression)
                 invariant.parse_expr()
-                invariants.append(invariant)
-
-
-
-
-if __name__ == "__main__":
-    parse_invariants("../tests/query_direct.c", None)
+                invariants.append(invariant.event)
+    return invariants

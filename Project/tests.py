@@ -4,6 +4,7 @@ from AST import ASTNode
 from Operator import Operator
 from Event import *
 from engine import Engine
+from invparse import parse_invariants
 
 import angr, claripy
 
@@ -15,19 +16,20 @@ def write_test():
     proj = angr.Project("../test")
     testscope = GlobalScope(proj)
 
-    # Creating the general condition
-    var_name = "allowed"
-    var_type = ExprType(Type.BV8, 0)
-    var_scope = testscope
-    var_node = ASTNode(Operator.VAR, [var_name, var_type, var_scope])
-    literal_node = ASTNode(Operator.LITERAL, [1, ExprType(Type.BV8, 0)])
-    cond = ASTNode(Operator.EQ, [var_node, literal_node])
-    print("General Constraint: " + cond.stringify())
+    # # Creating the general condition
+    # var_name = "allowed"
+    # var_type = ExprType(Type.BV8, 0)
+    # var_scope = testscope
+    # var_node = ASTNode(Operator.VAR, [var_name, var_type, var_scope])
+    # literal_node = ASTNode(Operator.LITERAL, [1, ExprType(Type.BV8, 0)])
+    # cond = ASTNode(Operator.EQ, [var_node, literal_node])
+    # print("General Constraint: " + cond.stringify())
+    #
+    # # Creating the event
+    # evt = WriteEvent("secret", testscope, cond, "WRITE(secret) -> is_allowed == 1")
+    evts = parse_invariants("../tests/arrays.c", proj)
 
-    # Creating the event
-    evt = WriteEvent("secret", testscope, cond, "WRITE(secret) -> is_allowed == 1")
-    
-    return Engine(proj, [evt])
+    return Engine(proj, evts)
 
 def write_next_test():
     os.system("gcc ../tests/next_definition.c -o ../test -O0 -g")
@@ -56,7 +58,7 @@ def arrays_test():
     proj = angr.Project("../test")
     testscope = GlobalScope(proj)
 
-    # General Condition
+    # # General Condition
     arr_node = ASTNode(Operator.VAR, ["arr", ExprType(Type.BV32, 1), testscope])
     idx_node = ASTNode(Operator.VAR, ["idx", ExprType(Type.BV32, 0), testscope])
     two_node = ASTNode(Operator.LITERAL, [2, ExprType(Type.BV32, 0)])
@@ -70,6 +72,7 @@ def arrays_test():
     evt = WriteEvent(arr_index_two_node, testscope, cond, "WRITE(arr[2]) -> arr[idx] < arr[2]")
 
     return Engine(proj, [evt])
+
 
 # Prepare the project
 arrays_test().run()
