@@ -59,20 +59,36 @@ def arrays_test():
     testscope = GlobalScope(proj)
 
     # # General Condition
-    arr_node = ASTNode(Operator.VAR, ["arr", ExprType(Type.BV32, 1), testscope])
+    arr_node = ASTNode(Operator.VAR, ["arr", ExprType(Type.BV32, 0), testscope])
     idx_node = ASTNode(Operator.VAR, ["idx", ExprType(Type.BV32, 0), testscope])
     two_node = ASTNode(Operator.LITERAL, [2, ExprType(Type.BV32, 0)])
 
     arr_index_two_node = ASTNode(Operator.INDEX, [arr_node, two_node])
     arr_index_idx_node = ASTNode(Operator.INDEX, [arr_node, idx_node])
+    next_node = ASTNode(Operator.NEXT, [arr_index_two_node])
 
-    cond = ASTNode(Operator.LE, [arr_index_idx_node, arr_index_two_node])
+    cond = ASTNode(Operator.LE, [arr_index_idx_node, next_node])
     print("General Constraint: " + cond.stringify())
 
-    evt = WriteEvent(arr_index_two_node, testscope, cond, "WRITE(arr[2]) -> arr[idx] < arr[2]")
+    evt = WriteEvent(arr_index_two_node, testscope, cond, "WRITE(arr[2]) -> arr[idx] <= NEXT(arr[2])")
 
     return Engine(proj, [evt])
 
+def calls_test():
+    os.system("gcc ../tests/simple_cond_call_cond.c -o ../test -O0 -g")
+
+    proj = angr.Project("../test")
+    testscope = GlobalScope(proj)
+
+    # General condition
+    allowed = ASTNode(Operator.VAR, ["allowed", ExprType(Type.BV8, 0), testscope])
+    one_node = ASTNode(Operator.LITERAL, [1, ExprType(Type.BV8, 0)])
+
+    cond = ASTNode(Operator.EQ, [allowed, one_node])
+
+    evt = CallEvent(proj.loader.find_symbol("special"), testscope, cond, "CALL(special) -> allowed == 1")
+
+    return Engine(proj, [evt])
 
 # Prepare the project
-arrays_test().run()
+calls_test().run()

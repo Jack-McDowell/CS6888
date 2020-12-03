@@ -25,7 +25,8 @@ class Event:
                 continue
             tmp_state = state.copy()
             tmp_state.solver.add(event_cond)
-            tmp_state.solver.add(event.general_constraint.get_sym(state) == False)
+            gen_c = event.general_constraint.get_sym(state) == False
+            tmp_state.solver.add(gen_c)
             if tmp_state.solver.satisfiable():
                 evt.engine.handle_violation(tmp_state, event)
 
@@ -75,9 +76,9 @@ class CallEvent(Event):
     subscribed = False
     events = []
 
-    def __init__(self, name, scope, general_constraint, stmt):
+    def __init__(self, fn, scope, general_constraint, stmt):
         super().__init__(scope, general_constraint, stmt)
-        self.name = name
+        self.fn = fn
 
     def subscribe(self, state):
         CallEvent.events.append(self)
@@ -88,9 +89,10 @@ class CallEvent(Event):
 
     def get_event_condition(self, state):
         if self.scope.state_in_scope(state):
-            if self.name == None:
+            if self.fn == None:
                 return True
-            return state.inspect.function_address == self.name # TODO: Verify function_address
+            # print(str(state.inspect.function_address))
+            return state.inspect.function_address == self.fn.rebased_addr
         else:
             return False
 

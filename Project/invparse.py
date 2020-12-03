@@ -172,7 +172,7 @@ def parse_tree(tree, variables):
         return ASTNode(Operator.LITERAL, [token.symbol.text, ExprType(Type.BV64, 0)])
     else:
         if token.symbol.text == "true" or token.symbol.text == "false":
-            return ASTNode(Operator.LITERAL, [token.symbol.text, ExprType(Type.BOOL, 0)])
+            return ASTNode(Operator.LITERAL, [token.symbol.text == "true", ExprType(Type.BOOL, 0)])
         assert (token.symbol.text in variables)
         return ASTNode(Operator.VAR,
                        [token.symbol.text, variables[token.symbol.text][0], variables[token.symbol.text][1]])

@@ -15,12 +15,11 @@ class ExprType:
         self.pointers = pointers
 
     def get_pointed_size(self):
-        assert(self.pointers > 0)
         assert(not self.t == Type.BOOL)
 
         if self.pointers > 1:
             return 8
-        elif self.pointers == 1:
+        else:
             return 2 ** (self.t.value - 1)
 
 def bigger_int(type1, type2):
@@ -172,8 +171,8 @@ Operator.DEREF = Operator(
 Operator.INDEX = Operator(
     lambda operands: operands[0] + "[" + operands[1] + "]",
     lambda operands, state, lval: 
-        operands[0].get_sym(state) + operands[0].get_type().get_pointed_size() * operands[1].get_sym(state) if lval else
-        state.memory.load(operands[0].get_sym(state) + operands[0].get_type().get_pointed_size() * operands[1].get_sym(state), 
+        operands[0].get_sym(state, operands[0].get_type().pointers == 0) + operands[0].get_type().get_pointed_size() * operands[1].get_sym(state) if lval else
+        state.memory.load(operands[0].get_sym(state, operands[0].get_type().pointers == 0) + operands[0].get_type().get_pointed_size() * operands[1].get_sym(state), 
                             operands[0].get_type().get_pointed_size(),
                             disable_actions=True, inspect=False, endness=archinfo.Endness.LE),
     lambda operands, lval: operands[0] if lval else deref_type(operands[0]),
