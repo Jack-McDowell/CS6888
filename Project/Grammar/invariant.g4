@@ -7,18 +7,19 @@ expr : expr '(' (expr (',' expr)*)? ')' 	#funAppExpr
      | '*' expr 				#deRefExpr
      | SUB NUMBER				#negNumber
      | '&' expr					#refExpr
-     | expr EXP expr       #exponentiationExpr
+     | expr EXP expr       			#exponentiationExpr
      | expr op=(MUL | DIV) expr 		#multiplicativeExpr
      | expr op=(ADD | SUB) expr 		#additiveExpr
-     | expr '[' expr ']'    #indexExpr
-     | expr op=(GT | GTE | LT | LTE) expr 				#relationalExpr
+     | expr '[' expr ']'    			#indexExpr
+     | 'NEXT(' expr ')'				#nextExpr
+     | expr op=(GT | GTE | LT | LTE) expr 	#relationalExpr
      | expr op=(EQ | NE) expr 			#equalityExpr
-     | expr BAND expr     #bandExpr
-     | expr BXOR expr    #bxorExpr
-     | expr BOR expr     #borExpr
-     | expr LAND expr    #landExpr
-     | expr LOR expr     #lorExpr
-     | NOT expr             #notExpr
+     | expr BAND expr     			#bandExpr
+     | expr BXOR expr    			#bxorExpr
+     | expr BOR expr     			#borExpr
+     | expr LAND expr    			#landExpr
+     | expr LOR expr     			#lorExpr
+     | NOT expr             			#notExpr
      | IDENTIFIER				#varExpr
      | NUMBER					#numExpr
      | '(' expr ')'				#parenExpr

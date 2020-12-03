@@ -90,5 +90,19 @@ def calls_test():
 
     return Engine(proj, [evt])
 
+def return_test():
+    os.system("gcc ../tests/return.c -o ../test -O0 -g")
+
+    proj = angr.Project("../test")
+    testscope = GlobalScope(proj)
+
+    # General Condition
+    retn_node = ASTNode(Operator.RETN, [ExprType(Type.BV32, 0)])
+    val_node = ASTNode(Operator.VAR, ["val", ExprType(Type.BV32, 0), testscope])
+
+    cond = ASTNode(Operator.GT, [retn_node, val_node])
+
+    evt = ReturnEvent(FunctionScope(proj, "main"), cond, "RETURN() -> RETURN_VAL() > val")
+
 # Prepare the project
 calls_test().run()

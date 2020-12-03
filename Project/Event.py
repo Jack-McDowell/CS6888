@@ -108,7 +108,7 @@ class ReturnEvent:
                             action=lambda state: Event.breakpoint(self, state))
 
     def get_event_condition(self, state):
-        return True
+        return self.scope.state_in_scope(state)
 
 class AlwaysEvent:
     subscribed = False
