@@ -1,10 +1,7 @@
 """
 This file parses invariants from source code. Invariants will occur in the code with the following style of comments
 // INVARIANT(var1, var2...) ACTION(var) -> expr
-Global invariants can be assigned in a section bracketed by
-// GLOBAL INVARIANTS
-global invariants go here
-// END GLOBAL INVARIANTS
+Global invariants can be assigned as long as there is a line in between all the invariants and any function
 """
 from Grammar.invariantParser import invariantParser as InvariantParser
 from Grammar.invariantLexer import invariantLexer as InvariantLexer
@@ -180,25 +177,46 @@ def parse_tree(tree, variables):
 
 def parse_invariants(file_name, project):
     with open(file_name, 'r') as f:
+        x = 0
         lines = f.readlines()
         invariants = []
         inv_reg = '^// ?INVARIANT\\(((([^)]*),)*([^)]*)?)\\):(.*)'
+        func_reg = '[A-z]+ +([A-z_]+)(\(| )'
         for line in lines:
             line = line.strip()
             match = re.match(inv_reg, line)
             variables = {}
             if match is not None:
                 args = match.group(1).split(',')
+                inv_scope = GlobalScope(project)
+                for y in range (x, len(lines)):
+                    l = lines[y].strip()
+                    if re.match(inv_reg, l):
+                        continue
+                    func_match = re.match(func_reg, l)
+                    if func_match is not None:
+                        inv_scope = FunctionScope(project, func_match.group(1))
+                        break
+                    else:
+                        break
+
                 #Create variables
                 for var in args:
                     var = var.strip()
+                    s = var.split(' ')[0]
+                    var = var.split(' ')[1]
+                    print(var)
                     #TODO: ID Scope
                     scope = GlobalScope(project)
+                    if s == 'local':
+                        scope = inv_scope
                     variables[var] = (ExprType(Type.BV64, 0), scope)
                 expression = match.group(5)
-                #TODO: ID Scope
-                inv_scope = GlobalScope(project)
                 invariant = Invariant(inv_scope, variables, expression)
                 invariant.parse_expr()
                 invariants.append(invariant.event)
+            x += 1
     return invariants
+
+if __name__ == "__main__":
+    parse_invariants("../tests/query_direct.c", None)
