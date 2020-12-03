@@ -15,8 +15,9 @@ class ASTNode:
         if self.memoization == None:
             val, not_state_invariant = self.operator.angrify(self.operands, state, lval)
             if self.can_memoize and not_state_invariant:
-                for op in operands:
-                    self.can_memoize = self.can_memoize and op.can_memoize
+                for op in self.operands:
+                    if type(op) is ASTNode:
+                        self.can_memoize = self.can_memoize and op.can_memoize
                 if self.can_memoize:
                     self.memoization = val
             return val

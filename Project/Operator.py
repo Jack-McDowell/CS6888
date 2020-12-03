@@ -83,28 +83,28 @@ class Operator:
 Operator.PLUS = Operator(
     lambda operands: "(" + operands[0] + " + " + operands[1] + ")",
     lambda operands, state, lval: 
-        (operands[0].get_sym(state) + operands[1].get_sym(state), False)
+        (operands[0].get_sym(state) + operands[1].get_sym(state), False),
     lambda operands, lval: combine_int(operands[0], operands[1]),
     2)
 
 Operator.MINUS = Operator(
     lambda operands: "(" + operands[0] + " - " + operands[1] + ")",
     lambda operands, state, lval: 
-        (operands[0].get_sym(state) - operands[1].get_sym(state), False)
+        (operands[0].get_sym(state) - operands[1].get_sym(state), False),
     lambda operands, lval: combine_int(operands[0], operands[1]),
     2)
 
 Operator.TIMES = Operator(
     lambda operands: "(" + operands[0] + " * " + operands[1] + ")",
     lambda operands, state, lval: 
-        (operands[0].get_sym(state) * operands[1].get_sym(state), False)
+        (operands[0].get_sym(state) * operands[1].get_sym(state), False),
     lambda operands, lval: combine_int(operands[0], operands[1]),
     2)
 
 Operator.DIVIDE = Operator(
     lambda operands: "(" + operands[0] + " / " + operands[1] + ")",
     lambda operands, state, lval: 
-        (operands[0].get_sym(state) / operands[1].get_sym(state), False)
+        (operands[0].get_sym(state) / operands[1].get_sym(state), False),
     lambda operands, lval: combine_int(operands[0], operands[1]),
     2)
 
