@@ -12,8 +12,8 @@ class Engine:
             evt.set_engine(self)
             evt.subscribe(self.state)
     
-    def handle_violation(self, state, evt):
-        print(evt.stmt + " was violated by input " + hex(state.solver.eval(self.inp)))
+    def handle_violation(self, state, conds, evt):
+        print(evt.stmt + " was violated by input " + hex(state.solver.eval(self.inp, extra_constraints=conds)))
 
     def run(self):
         self.simgr = self.proj.factory.simgr(self.state)

@@ -21,14 +21,13 @@ class Event:
     def breakpoint(evt, state):
         for event in evt.__class__.events:
             event_cond = event.get_event_condition(state)
+            
             if (type(event_cond) is bool and not event_cond) or state.solver.is_false(event_cond):
                 continue
-            tmp_state = state.copy()
-            tmp_state.solver.add(event_cond)
+
             gen_c = event.general_constraint.get_sym(state) == False
-            tmp_state.solver.add(gen_c)
-            if tmp_state.solver.satisfiable():
-                evt.engine.handle_violation(tmp_state, event)
+            if state.solver.satisfiable(extra_constraints=[event_cond, gen_c]):
+                evt.engine.handle_violation(state, [event_cond, gen_c], event)
 
 class ReadEvent(Event):
     subscribed = False
