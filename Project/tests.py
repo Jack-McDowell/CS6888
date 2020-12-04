@@ -104,5 +104,59 @@ def return_test():
 
     evt = ReturnEvent(FunctionScope(proj, "main"), cond, "RETURN() -> RETURN_VAL() > val")
 
+def operators_test():
+    solver = claripy.Solver()
+
+    sym_one      = claripy.BVS("one",      32); 
+    sym_uone      = claripy.BVS("one",     8 ); 
+    sym_zero     = claripy.BVS("zero",     32); 
+    sym_neg_one  = claripy.BVS("neg_one",  32); 
+    sym_uint_max = claripy.BVS("uint_max", 32); 
+
+    solver.add(sym_one      == 1            )
+    solver.add(sym_zero     == 0            )
+    solver.add(sym_neg_one  == -1           )
+    solver.add(sym_uint_max == (2 ** 32) - 1)
+
+    one_node      = ASTNode(Operator.LITERAL, [sym_one     , ExprType(Type.BV32, signed=True )])
+    uone_node     = ASTNode(Operator.LITERAL, [sym_uone    , ExprType(Type.BV8,  signed=False)])
+    zero_node     = ASTNode(Operator.LITERAL, [sym_zero    , ExprType(Type.BV32, signed=True )])
+    neg_one_node  = ASTNode(Operator.LITERAL, [sym_neg_one , ExprType(Type.BV32, signed=True )])
+    uint_max_node = ASTNode(Operator.LITERAL, [sym_uint_max, ExprType(Type.BV32, signed=False)])
+
+    one_eq_zero_node = ASTNode(Operator.EQ, [one_node, zero_node])
+    assert(solver.is_false(one_eq_zero_node.get_sym(None)))
+
+    neg_one_eq_uint_max_node = ASTNode(Operator.EQ, [neg_one_node, uint_max_node])
+    assert(solver.is_false(neg_one_eq_uint_max_node.get_sym(None)))
+
+    uone_eq_one_node = ASTNode(Operator.EQ, [one_node, uone_node])
+    assert(solver.is_false(uone_eq_one_node.get_sym(None)))
+
+    sum_node = ASTNode(Operator.ADD, [sym_one, sym_neg_one])
+    sum_zero_node = ASTNode(Operator.EQ, [sum_node, zero_node])
+    assert(solver.is_true(sum_zero_node.get_sym(None)))
+
+    sub_node = ASTNode(Operator.SUB, [zero_node, neg_one_node])
+    sub_one_node = ASTNode(Operator.EQ, [sub_node, one_node])
+    assert(solver.is_true(sub_one_node.get_sym(None)))
+
+    mul_node = ASTNode(Operator.MUL, [neg_one_node, neg_one_node])
+    mul_one_node = ASTNode(Operator.EQ, [mul_node, one_node])
+    assert(solver.is_true(mul_one_node.get_sym(None)))
+
+    div_node = ASTNode(Operator.DIVIDE, [uone_node, uone_node])
+    div_one_node = ASTNode(Operator.EQ, [div_node, one_node])
+    assert(solver.is_true(div_one_node.get_sym(None)))
+
+    sdiv_node = ASTNode(Operator.DIVIDE, [uone_node, neg_one_node])
+    sdiv_one_node = ASTNode(Operator.EQ, [sdiv_node, neg_one_node])
+    assert(solver.is_true(sdiv_one_node.get_sym(None)))
+
+    xor_node = ASTNode(Operator.BXOR, [uint_max_node, neg_one_node])
+    xor_zero_node = ASTNode(Operator.EQ, [xor_node, zero_node])
+    assert(solver.is_true(xor_zero_node.get_sym(None)))
+
 # Prepare the project
-calls_test().run()
+# calls_test().run()
+operators_test()
