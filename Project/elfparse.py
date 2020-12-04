@@ -1,5 +1,5 @@
 from offsets import get_var_offset
-cfg = {}
+cfgs = {}
 func_bounds = {}
 var_offset = {}
 
@@ -9,10 +9,11 @@ def get_function_bounds(project, function_name):
     the ANGR project passed as an argument.
     """
     id_tup = (project, function_name)
-    global cfg
+    global cfgs
     global func_bounds
-    if project not in cfg:
-        cfg = project.analyses.CFGFast()
+    if project not in cfgs:
+        cfgs[project] = project.analyses.CFGFast()
+    cfg = cfgs[project]
     if id_tup in func_bounds:
         return func_bounds[id_tup]
     func = cfg.kb.functions.function(name=function_name)
