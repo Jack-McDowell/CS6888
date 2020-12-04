@@ -92,11 +92,14 @@ def signed_gt(op1, op2, state):
 
     return claripy.If(claripy.SLT(v1 if t1.signed else v2, 0), not t1.signed, v1 > v2)
 
-def perform_index(state, arr_node, idx_node, lval):
-    offset = operands[0].get_type().get_pointed_size() * operands[1].get_sym(state)
+def perform_access(state, struct, offset, lval):
     array_ptr = not operands[0].get_type().pointers == 0
     ptr = operands[0].get_sym(state, not array_ptr) + operands[0] + offset
     return perform_deref(state, ptr, lval)
+
+def perform_index(state, arr_node, idx_node, lval):
+    offset = operands[0].get_type().get_pointed_size() * operands[1].get_sym(state)
+    return perform_access(state, arr_node, offset, lval)
 
 class Operator:
     def __init__(self, output, angrify, typer, operands):
@@ -123,6 +126,7 @@ class Operator:
     LNOT = None
     DEREF = None
     INDEX = None
+    ACCESS = None
     VAR = None
     NEXT = None
     LITERAL = None
@@ -245,6 +249,12 @@ Operator.INDEX = Operator(
     lambda operands, state, lval: (perform_index(state, operands[0], operands[1], lval), True),
     lambda operands, lval: operands[0] if lval else deref_type(operands[0]),
     2)
+
+Operator.ACCESS = Operator(
+    lambda operands: "*(???*)((char*) " + operands[0] + " + " operands[1] + ")",
+    lambda operands, state, lval: (perform_access(state, operands[0], operands[1], lval), True),
+    lambda operands, lval: operands[2] if lval else deref_type(operands[2]),
+    3)
 
 Operator.VAR = Operator(
     lambda operands: operands[0],
