@@ -1,6 +1,7 @@
+from offsets import get_var_offset
 cfg = {}
 func_bounds = {}
-
+var_offset = {}
 
 def get_function_bounds(project, function_name):
     """
@@ -31,3 +32,10 @@ def get_var_stack_offset(project, function_name, var_name):
     of the function and offset is the return value of this function 
     should refer to the memory address of the variable. 
     """
+    id_tup = (project, function_name, var_name)
+    global var_offset
+    if id_tup in var_offset:
+        return var_offset[id_tup]
+    print(project.filename)
+    var_offset[id_tup] = get_var_offset(project.filename, function_name.encode('utf-8'), var_name.encode('utf-8'))
+    return var_offset[id_tup]
