@@ -61,7 +61,10 @@ class Invariant:
                 self.event = Event.WriteEvent(con_ast, self.scope, self.ast, self.str_expr)
         elif event == "CALL":
             self.event = Event.CallEvent(con_expr, self.scope, self.ast, self.str_expr)
-        #TODO: Handle return and always
+        elif event == "RETURN":
+            self.event = Event.ReturnEvent(con_expr, self.scope, self.ast, self.str_expr)
+        elif event == "ALWAYS":
+            self.event = Event.AlwaysEvent(con_expr, self.scope, self.ast, self.str_expr)
 
 
 
@@ -73,6 +76,9 @@ def parse_tree(tree, variables):
         if func_name == "NEXT":
             operand_one = parse_tree(tree.getChild(2), variables)
             return ASTNode(Operator.NEXT, [operand_one])
+        else:
+            operand_one = ExprType(Type.BV64, 0)
+            return ASTNode(Operator.RETN, [operand_one])
     elif isinstance(tree, InvariantParser.IndexExprContext):
         operand_one = parse_tree(tree.getChild(0), variables)
         operand_two = parse_tree(tree.getChild(2), variables)
