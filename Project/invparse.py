@@ -78,7 +78,6 @@ def parse_tree(tree, variables):
         operand_two = parse_tree(tree.getChild(2), variables)
         return ASTNode(Operator.INDEX, [operand_one, operand_two])
     op = int((tree.getChildCount() - 1) / 2)
-    print(op)
     token = tree.getChild(op)
     if token is None:
         if re.fullmatch('[0-9]+', tree.symbol.text):
