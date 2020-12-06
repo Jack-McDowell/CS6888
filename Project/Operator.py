@@ -42,6 +42,16 @@ def perform_deref(state, ptr, lval):
                                  disable_actions=True, inspect=False, 
                                  endness=archinfo.Endness.LE),
 
+def return_cast(val, tp):
+    if tp.pointers > 0:
+        return val
+
+    if tp.t == Type.BOOL:
+        return val != 0
+
+    bts = 2 ** (tp.t.value - 1)
+    return val.get_bytes(8 - bts, bts)
+
 def int_unif(op1, op2, state):
     v1 = op1.get_sym(state)
     v2 = op2.get_sym(state)
@@ -55,7 +65,7 @@ def int_unif(op1, op2, state):
 
         bc1 = 2 ** (t1.t.value + 2)
         bc2 = 2 ** (t2.t.value + 2)
-
+        
         if bc1 > bc2 and not type(v2) is int:
             v2 = v2.sign_extend(bc1 - bc2) if t2.signed else v2.zero_extend(bc1 - bc2)
         elif bc2 > bc1 and not type(v1) is int: 
@@ -251,7 +261,7 @@ Operator.INDEX = Operator(
     2)
 
 Operator.ACCESS = Operator(
-    lambda operands: "*(???*)((char*) " + operands[0] + " + " operands[1] + ")",
+    lambda operands: "*(???*)((char*) " + operands[0] + " + " + operands[1] + ")",
     lambda operands, state, lval: (perform_access(state, operands[0], operands[1], lval), True),
     lambda operands, lval: operands[2] if lval else deref_type(operands[2]),
     3)
@@ -277,6 +287,6 @@ Operator.NEXT = Operator(
 
 Operator.RETN = Operator(
     lambda operands: "RETURN_VAL()",
-    lambda operands, state, lval: (state.regs.rax, True),
+    lambda operands, state, lval: (return_cast(state.regs.rax, operands[0]), True),
     lambda operands, lval: operands[0],
     1)

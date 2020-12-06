@@ -13,8 +13,9 @@ class ASTNode:
     
     def get_sym(self, state, lval=False):
         if self.memoization == None:
-            val, not_state_invariant = self.operator.angrify(self.operands, state, lval)
-            if self.can_memoize and not_state_invariant:
+            val, uses_state = self.operator.angrify(self.operands, state, lval)
+            self.can_memoize = self.can_memoize and not uses_state
+            if self.can_memoize:
                 for op in self.operands:
                     if type(op) is ASTNode:
                         self.can_memoize = self.can_memoize and op.can_memoize

@@ -21,7 +21,6 @@ class Event:
     def breakpoint(evt, state):
         for event in evt.__class__.events:
             event_cond = event.get_event_condition(state)
-            
             if (type(event_cond) is bool and not event_cond) or state.solver.is_false(event_cond):
                 continue
 
@@ -95,19 +94,24 @@ class CallEvent(Event):
         else:
             return False
 
-class ReturnEvent:
+class ReturnEvent(Event):
     subscribed = False
     events = []
+
+    def __init__(self, begin, scope, general_constraint, stmt):
+        super().__init__(scope, general_constraint, stmt)
+        self.begin = begin
 
     def subscribe(self, state):
         ReturnEvent.events.append(self)
         if not ReturnEvent.subscribed:
+            print("Subscribing")
             ReturnEvent.subscribed = True
             state.inspect.b("return", when=angr.BP_BEFORE, 
                             action=lambda state: Event.breakpoint(self, state))
 
     def get_event_condition(self, state):
-        return self.scope.state_in_scope(state)
+        return self.scope.state_in_scope(state) and state.satisfiable(extra_constraints=[state.callstack.func_addr == self.begin])
 
 class AlwaysEvent:
     subscribed = False

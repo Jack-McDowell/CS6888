@@ -1,10 +1,11 @@
-from varparse import Scope, GlobalScope
+from varparse import Scope, GlobalScope, FunctionScope
 from Operator import Type, ExprType
 from AST import ASTNode
 from Operator import Operator
 from Event import *
 from engine import Engine
 from invparse import parse_invariants
+from elfparse import *
 
 import angr, claripy
 
@@ -102,7 +103,9 @@ def return_test():
 
     cond = ASTNode(Operator.GT, [retn_node, val_node])
 
-    evt = ReturnEvent(FunctionScope(proj, "main"), cond, "RETURN() -> RETURN_VAL() > val")
+    evt = ReturnEvent(proj.loader.find_symbol("main").rebased_addr, testscope, cond, "RETURN() -> RETURN_VAL() > val")
+
+    return Engine(proj, [evt])
 
 def check(solver, stmt):
     if not solver.satisfiable(extra_constraints=[stmt]):
@@ -155,4 +158,4 @@ def operators_test():
     check(solver, xor_zero_node.get_sym(None))
 
 # Prepare the project
-calls_test().run()
+return_test().run()

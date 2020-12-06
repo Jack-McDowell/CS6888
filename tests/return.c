@@ -6,7 +6,7 @@ int main(int argc, char** argv){
 		return -1;
 	} else {
 		val = 4;
-		if(*argv[0] == 'j'){
+		if(*argv[1] == 'j'){
 			return 3;
 		} else {
 			return 5;

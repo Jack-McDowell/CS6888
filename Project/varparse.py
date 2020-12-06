@@ -23,8 +23,8 @@ class GlobalScope(Scope):
 
 class FunctionScope(Scope):
     def __init__(self, project, function_name):
-        super().__init__(self, project)
-        self.base, self.end = get_function_bounds(function_name)
+        super().__init__(project)
+        self.base, self.end = get_function_bounds(project, function_name)
         self.func = function_name
 
     def eval_variable_address(self, state, name):
