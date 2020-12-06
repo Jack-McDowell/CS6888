@@ -17,9 +17,10 @@ expr : expr '(' (expr (',' expr)*)? ')' 	#funAppExpr
      | expr BAND expr     			#bandExpr
      | expr BXOR expr    			#bxorExpr
      | expr BOR expr     			#borExpr
+     | BNOT expr                    #bnotExpr
      | expr LAND expr    			#landExpr
      | expr LOR expr     			#lorExpr
-     | NOT expr             			#notExpr
+     | LNOT expr             			#notExpr
      | IDENTIFIER				#varExpr
      | NUMBER					#numExpr
      | '(' expr ')'				#parenExpr
@@ -43,7 +44,8 @@ LOR : '||' ;
 BAND : '&' ;
 BOR : '|' ;
 BXOR : '^' ;
-NOT : '!' ;
+LNOT : '!' ;
+BNOT : '~' ;
 
 NUMBER : [0-9]+ ;
 

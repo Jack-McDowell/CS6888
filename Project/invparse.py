@@ -67,13 +67,26 @@ class Invariant:
 
 def parse_tree(tree, variables):
     # TODO: Handle NEXT, RETURN, and INDEX
+    if isinstance(tree, InvariantParser.FunAppExprContext):
+        func_name = tree.getChild(0).getChild(0).symbol.text
+        assert(func_name == "NEXT" or func_name == "RETURN_VAL")
+        if func_name == "NEXT":
+            operand_one = parse_tree(tree.getChild(2), variables)
+            return ASTNode(Operator.NEXT, [operand_one])
+    elif isinstance(tree, InvariantParser.IndexExprContext):
+        operand_one = parse_tree(tree.getChild(0), variables)
+        operand_two = parse_tree(tree.getChild(2), variables)
+        return ASTNode(Operator.INDEX, [operand_one, operand_two])
     op = int((tree.getChildCount() - 1) / 2)
+    print(op)
     token = tree.getChild(op)
     if token is None:
         if re.fullmatch('[0-9]+', tree.symbol.text):
             return ASTNode(Operator.LITERAL, [tree.symbol.text, ExprType(Type.BV64, 0)])
         else:
-            return ASTNode(Operator.VAR, [tree.symbol.text, None, None])
+            assert(tree.symbol.text in variables)
+            return ASTNode(Operator.VAR,
+                           [tree.symbol.text, variables[tree.symbol.text][0], variables[tree.symbol.text][1]])
     if token.symbol.text == "+":
         operand_one = parse_tree(tree.getChild(0), variables)
         operand_two = parse_tree(tree.getChild(2), variables)
@@ -104,11 +117,6 @@ def parse_tree(tree, variables):
         operand_one = parse_tree(tree.getChild(0), variables)
         operand_two = parse_tree(tree.getChild(2), variables)
         operator = Operator.DIVIDE
-        return ASTNode(operator, [operand_one, operand_two])
-    elif token.symbol.text == '**':
-        operand_one = parse_tree(tree.getChild(0), variables)
-        operand_two = parse_tree(tree.getChild(2), variables)
-        operator = Operator.EXP
         return ASTNode(operator, [operand_one, operand_two])
     elif token.symbol.text == '&':
         operand_one = parse_tree(tree.getChild(0), variables)
@@ -165,6 +173,14 @@ def parse_tree(tree, variables):
         operand_two = parse_tree(tree.getChild(2), variables)
         operator = Operator.LOR
         return ASTNode(operator, [operand_one, operand_two])
+    elif token.symbol.text == '!':
+        operand_one = parse_tree(tree.getChild(1), variables)
+        operator = Operator.LNOT
+        return ASTNode(operator, [operand_one])
+    elif token.symbol.text == '~':
+        operand_one = parse_tree(tree.getChild(1), variables)
+        operator = Operator.BNOT
+        return ASTNode(operator, [operand_one])
     elif re.fullmatch('[0-9]+', token.symbol.text):
         return ASTNode(Operator.LITERAL, [token.symbol.text, ExprType(Type.BV64, 0)])
     else:

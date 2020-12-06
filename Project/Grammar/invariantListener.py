@@ -26,6 +26,24 @@ class invariantListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by invariantParser#nextExpr.
+    def enterNextExpr(self, ctx:invariantParser.NextExprContext):
+        pass
+
+    # Exit a parse tree produced by invariantParser#nextExpr.
+    def exitNextExpr(self, ctx:invariantParser.NextExprContext):
+        pass
+
+
+    # Enter a parse tree produced by invariantParser#bnotExpr.
+    def enterBnotExpr(self, ctx:invariantParser.BnotExprContext):
+        pass
+
+    # Exit a parse tree produced by invariantParser#bnotExpr.
+    def exitBnotExpr(self, ctx:invariantParser.BnotExprContext):
+        pass
+
+
     # Enter a parse tree produced by invariantParser#additiveExpr.
     def enterAdditiveExpr(self, ctx:invariantParser.AdditiveExprContext):
         pass
