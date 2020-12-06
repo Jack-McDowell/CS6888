@@ -30,4 +30,5 @@ def get_var_stack_offset(project, function_name, var_name):
     if id_tup in var_offset:
         return var_offset[id_tup]
     var_offset[id_tup] = get_var_offset(project.filename, function_name, var_name)
+    print("Looked up " + var_name + " in " + function_name + " of " + project.filename)
     return var_offset[id_tup]

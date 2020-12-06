@@ -107,6 +107,24 @@ def return_test():
 
     return Engine(proj, [evt])
 
+
+def locals_test():
+    os.system("gcc ../tests/locals.c -o ../test -O0 -g")
+
+    proj = angr.Project("../test")
+    testscope = GlobalScope(proj)
+    funcscope = FunctionScope(proj, "func")
+
+    # General Condition
+    local_node = ASTNode(Operator.VAR, ["local", ExprType(Type.BV32, signed=True), funcscope])
+    arg_node = ASTNode(Operator.VAR, ["arg", ExprType(Type.BV32, signed=True), funcscope])
+
+    cond = ASTNode(Operator.GT, [local_node, arg_node])
+
+    evt = ReturnEvent(proj.loader.find_symbol("func").rebased_addr, testscope, cond, "RETURN(func) -> local > arg")
+
+    return Engine(proj, [evt])
+
 def check(solver, stmt):
     if not solver.satisfiable(extra_constraints=[stmt]):
         print(stmt)
@@ -157,5 +175,6 @@ def operators_test():
     xor_zero_node = ASTNode(Operator.EQ, [xor_node, zero_node])
     check(solver, xor_zero_node.get_sym(None))
 
+
 # Prepare the project
-return_test().run()
+locals_test().run()

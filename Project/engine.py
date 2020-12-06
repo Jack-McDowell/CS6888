@@ -13,7 +13,7 @@ class Engine:
             evt.subscribe(self.state)
     
     def handle_violation(self, state, conds, evt):
-        print(evt.stmt + " was violated by input " + hex(state.solver.eval(self.inp, extra_constraints=conds)))
+        print(evt.stmt + " was violated by input " + str(state.solver.eval(self.inp, extra_constraints=conds, cast_to=bytes)))
 
     def run(self):
         self.simgr = self.proj.factory.simgr(self.state)

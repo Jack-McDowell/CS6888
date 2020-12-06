@@ -28,15 +28,19 @@ class FunctionScope(Scope):
         self.func = function_name
 
     def eval_variable_address(self, state, name):
-        frame = get_stack_frame(self, state)
-        return frame.stack_pointer + get_var_stack_offset(self.project, self.func, name)
+        frame = self.get_stack_frame(state)
+        if frame == None:
+            print("Unable to find " + name)
+            print(state.callstack)
+            print("searching for " + hex(self.base))
+        return frame.stack_ptr + get_var_stack_offset(self.project, self.func, name)
 
     def state_in_scope(self, state):
         return not self.get_stack_frame(state) == None
 
     def get_stack_frame(self, state):
         for callsite in state.callstack:
-            if callsite == self.base: # TODO: Treat as symbolic?
+            if callsite.func_addr == self.base: # TODO: Treat as symbolic?
                 return callsite
         return None
 
