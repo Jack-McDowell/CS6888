@@ -1,5 +1,4 @@
-from offsets import get_var_offset
-cfgs = {}
+from offsets import get_var_offset, get_func_bounds
 func_bounds = {}
 var_offset = {}
 
@@ -9,19 +8,12 @@ def get_function_bounds(project, function_name):
     the ANGR project passed as an argument.
     """
     id_tup = (project, function_name)
-    global cfgs
     global func_bounds
-    if project not in cfgs:
-        cfgs[project] = project.analyses.CFGFast()
-    cfg = cfgs[project]
     if id_tup in func_bounds:
         return func_bounds[id_tup]
-    func = cfg.kb.functions.function(name=function_name)
-    end_addr = 0
-    for block in func.blocks:
-        if block.instruction_addrs[block.instructions - 1] > end_addr:
-            end_addr = block.instruction_addrs[block.instructions - 1]
-    func_bounds[id_tup] = (func.addr, end_addr)
+    bound_offsets = get_func_bounds(project.filename, function_name.encode('utf-8'))
+    func_bounds[id_tup] = (bound_offsets[0] + project.loader.memory.min_addr,
+                           bound_offsets[1] + project.loader.memory.min_addr)
     return func_bounds[id_tup]
 
 
@@ -37,6 +29,5 @@ def get_var_stack_offset(project, function_name, var_name):
     global var_offset
     if id_tup in var_offset:
         return var_offset[id_tup]
-    print(project.filename)
-    var_offset[id_tup] = get_var_offset(project.filename, function_name.encode('utf-8'), var_name.encode('utf-8'))
+    var_offset[id_tup] = get_var_offset(project.filename, function_name, var_name)
     return var_offset[id_tup]

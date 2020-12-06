@@ -34,6 +34,57 @@ from elftools.dwarf.locationlists import (
     LocationEntry, LocationExpr, LocationParser)
 from elftools.dwarf.dwarf_expr import DWARFExprParser
 
+def get_func_bounds(filename, function_name):
+    with open(filename, 'rb') as f:
+        elffile = ELFFile(f)
+        if not elffile.has_dwarf_info():
+            print('  file has no DWARF info')
+            return
+
+        # get_dwarf_info returns a DWARFInfo context object, which is the
+        # starting point for all DWARF-based processing in pyelftools.
+        dwarfinfo = elffile.get_dwarf_info()
+
+        # The location lists are extracted by DWARFInfo from the .debug_loc
+        # section, and returned here as a LocationLists object.
+        location_lists = dwarfinfo.location_lists()
+
+        # This is required for the descriptions module to correctly decode
+        # register names contained in DWARF expressions.
+        set_global_machine_arch(elffile.get_machine_arch())
+
+        # Create a LocationParser object that parses the DIE attributes and
+        # creates objects representing the actual location information.
+        loc_parser = LocationParser(location_lists)
+
+        for CU in dwarfinfo.iter_CUs():
+            # DWARFInfo allows to iterate over the compile units contained in
+            # the .debug_info section. CU is a CompileUnit object, with some
+            # computed attributes (such as its offset in the section) and
+            # a header which conforms to the DWARF standard. The access to
+            # header elements is, as usual, via item-lookup.
+
+            # A CU provides a simple API to iterate over all the DIEs in it.
+            for DIE in CU.iter_DIEs():
+                # Find the function
+                if DIE.tag == "DW_TAG_subprogram":
+                    fname = ""
+                    high_addr = 0
+                    low_addr = 0
+                    c = False
+                    for attr in itervalues(DIE.attributes):
+                        if attr.name == "DW_AT_name":
+                            fname = attr.value
+                        if attr.name == "DW_AT_low_pc":
+                            low_addr = attr.value
+                        if attr.name == "DW_AT_high_pc":
+                            high_addr = attr.value
+                    if high_addr < low_addr:
+                        high_addr = low_addr + high_addr
+                    if fname == function_name:
+                        return (low_addr, high_addr)
+
+
 def get_var_offset(filename, function_name, var_name):
     with open(filename, 'rb') as f:
         elffile = ELFFile(f)
@@ -115,42 +166,4 @@ def get_var_name(filename, function_name, offset):
         # register names contained in DWARF expressions.
         set_global_machine_arch(elffile.get_machine_arch())
 
-        # Create a LocationParser object that parses the DIE attributes and
-        # creates objects representing the actual location information.
-        loc_parser = LocationParser(location_lists)
-
-        for CU in dwarfinfo.iter_CUs():
-            # DWARFInfo allows to iterate over the compile units contained in
-            # the .debug_info section. CU is a CompileUnit object, with some
-            # computed attributes (such as its offset in the section) and
-            # a header which conforms to the DWARF standard. The access to
-            # header elements is, as usual, via item-lookup.
-
-            # A CU provides a simple API to iterate over all the DIEs in it.
-            for DIE in CU.iter_DIEs():
-                #Find the function
-                if DIE.tag == "DW_TAG_subprogram":
-                    fname = ""
-                    for attr in itervalues(DIE.attributes):
-                        if attr.name == "DW_AT_name":
-                            fname = attr.value
-                    if fname == function_name:
-                        for CHILD in DIE.iter_children():
-                            if CHILD.tag == "DW_TAG_variable" or CHILD.tag == "DW_TAG_formal_parameter" :
-                                name = ""
-                                right_loc = False
-                                for attr in itervalues(CHILD.attributes):
-                                    if attr.name == "DW_AT_name":
-                                       name = attr.value
-                                    # Check if this attribute contains location information
-                                    if attr.name == "DW_AT_location":
-                                        loc = loc_parser.parse_from_attribute(attr,
-                                                                                  CU['version'])
-                                        if isinstance(loc, LocationExpr):
-                                            parser = DWARFExprParser(dwarfinfo.structs)
-                                            parsed = parser.parse_expr(loc.loc_expr)
-                                            for op in parsed:
-                                                if op.op_name == 'DW_OP_fbreg' and op.args[0] == offset:
-                                                    right_loc = True
-                                if right_loc:
-                                    return name
+        # Create a LocationParser object that parses the DIE attributes a
