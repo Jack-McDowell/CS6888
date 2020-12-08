@@ -182,7 +182,7 @@ def get_frame_base(filename, pc, rebased_addr):
                     if entry['pc'] > target_loc and entry['pc'] < min_greater:
                         offset = entry['cfa'].offset
                         min_greater = entry['pc']
-        return offset
+        return offset + rebased_addr
 
 
 # if __name__ == "__main__":
