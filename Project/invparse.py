@@ -22,12 +22,13 @@ class Invariant:
         { variable_name: (variable_type, variable_scope) }
     """
 
-    def __init__(self, scope, variables, str_expr):
+    def __init__(self, scope, variables, str_expr, project):
         self.scope = scope
         self.vars = variables
         self.str_expr = str_expr
         self.ast = None
         self.event = None
+        self.project = project
 
     def parse_expr(self):
         """
@@ -60,11 +61,11 @@ class Invariant:
             else:
                 self.event = Event.WriteEvent(con_ast, self.scope, self.ast, self.str_expr)
         elif event == "CALL":
-            self.event = Event.CallEvent(con_expr, self.scope, self.ast, self.str_expr)
+            self.event = Event.CallEvent(self.project.loader.find_symbol(con_expr).rebased_addr, self.scope, self.ast, self.str_expr)
         elif event == "RETURN":
-            self.event = Event.ReturnEvent(con_expr, self.scope, self.ast, self.str_expr)
+            self.event = Event.ReturnEvent(self.project.loader.find_symbol(con_expr).rebased_addr, self.scope, self.ast, self.str_expr)
         elif event == "ALWAYS":
-            self.event = Event.AlwaysEvent(con_expr, self.scope, self.ast, self.str_expr)
+            self.event = Event.AlwaysEvent(self.scope, self.ast, self.str_expr)
 
 
 def get_type_from_str(type):
@@ -94,7 +95,6 @@ def get_type_from_str(type):
 
 
 def parse_tree(tree, variables):
-    # TODO: Handle NEXT, RETURN, and INDEX
     if isinstance(tree, InvariantParser.FunAppExprContext):
         func_name = tree.getChild(0).getChild(0).symbol.text
         assert(func_name == "NEXT" or func_name == "RETURN_VAL")
@@ -261,7 +261,7 @@ def parse_invariants(file_name, project):
                     expr_type = get_type_from_str(type)
                     variables[var] = (expr_type, scope)
                 expression = match.group(5)
-                invariant = Invariant(inv_scope, variables, expression)
+                invariant = Invariant(inv_scope, variables, expression, project)
                 invariant.parse_expr()
                 invariants.append(invariant.event)
             x += 1
