@@ -1,4 +1,4 @@
-from offsets import get_var_offset, get_func_bounds
+from offsets import get_var_offset, get_func_bounds, get_frame_base
 func_bounds = {}
 var_offset = {}
 
@@ -17,7 +17,7 @@ def get_function_bounds(project, function_name):
     return func_bounds[id_tup]
 
 
-def get_var_stack_offset(project, function_name, var_name):
+def get_var_stack_offset(project, function_name, var_name, base):
     """
     Returns the offset from the stack pointer's value at the beginning 
     of the function to the variable's location on the stack. In general,
@@ -30,5 +30,8 @@ def get_var_stack_offset(project, function_name, var_name):
     if id_tup in var_offset:
         return var_offset[id_tup]
     var_offset[id_tup] = get_var_offset(project.filename, function_name.encode('utf-8'), var_name.encode('utf-8'))
+    # COMMENT OUT THE BELOW LINE TO GET WRONG OFFSET
+    # GETS RIGHT OFFSET FOR locals.c AT LEAST
+    var_offset[id_tup] += get_frame_base(project.filename, base, project.loader.memory.min_addr)
     print("Offset for " + var_name + " is " + hex(var_offset[id_tup]))
     return var_offset[id_tup]

@@ -33,7 +33,7 @@ class FunctionScope(Scope):
             print("Unable to find " + name)
             print(state.callstack)
             print("searching for " + hex(self.base))
-        return frame.stack_ptr + get_var_stack_offset(self.project, self.func, name)
+        return frame.stack_ptr + get_var_stack_offset(self.project, self.func, name, self.base)
 
     def state_in_scope(self, state):
         return not self.get_stack_frame(state) == None
