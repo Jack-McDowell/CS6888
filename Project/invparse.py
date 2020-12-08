@@ -225,13 +225,35 @@ def parse_invariants(file_name, project):
                 for var in args:
                     var = var.strip()
                     s = var.split(' ')[0]
-                    var = var.split(' ')[1]
-                    print(var)
+                    type = var.split(' ')[1]
+                    var = var.split(' ')[2]
                     #TODO: ID Scope
                     scope = GlobalScope(project)
                     if s == 'local':
                         scope = inv_scope
-                    variables[var] = (ExprType(Type.BV64, 0), scope)
+                    expr_type = None
+                    bool_reg = "bool(\**)"
+                    bool_match = re.match(bool_reg, type)
+                    num_reg = "(u?)num(8|16|32|64)(\**)"
+                    num_match = re.match(num_reg, type)
+                    if bool_match is not None:
+                        expr_type = ExprType(Type.BOOL, pointers=len(bool_match.group(1)))
+                    elif num_match is not None:
+                        signed = len(num_match.group(1)) == 0
+                        size = int(num_match.group(2))
+                        pointers = len(num_match.group(3))
+                        if size == 8:
+                            expr_type = ExprType(Type.BV8, pointers=pointers, signed=signed)
+                        elif size == 16:
+                            expr_type = ExprType(Type.BV16, pointers=pointers, signed=signed)
+                        elif size == 32:
+                            expr_type = ExprType(Type.BV32, pointers=pointers, signed=signed)
+                        else:
+                            expr_type = ExprType(Type.BV64, pointers=pointers, signed=signed)
+                    else:
+                        # Throw error
+                        assert False
+                    variables[var] = (expr_type, scope)
                 expression = match.group(5)
                 invariant = Invariant(inv_scope, variables, expression)
                 invariant.parse_expr()
