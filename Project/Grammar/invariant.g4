@@ -2,7 +2,7 @@ grammar invariant;
 
 //////////////////////Expressions //////////////////////////
 
-expr : expr '(' (expr (',' expr)*)? ')' 	#funAppExpr
+expr : ('NEXT' | 'RETURN_VAL') '(' (expr)? ')' 	#funAppExpr
      |expr '.' IDENTIFIER 			#accessExpr
      | '*' expr 				#deRefExpr
      | SUB NUMBER				#negNumber
@@ -11,7 +11,6 @@ expr : expr '(' (expr (',' expr)*)? ')' 	#funAppExpr
      | expr op=(MUL | DIV) expr 		#multiplicativeExpr
      | expr op=(ADD | SUB) expr 		#additiveExpr
      | expr '[' expr ']'    			#indexExpr
-     | 'NEXT(' expr ')'				#nextExpr
      | expr op=(GT | GTE | LT | LTE) expr 	#relationalExpr
      | expr op=(EQ | NE) expr 			#equalityExpr
      | expr BAND expr     			#bandExpr
