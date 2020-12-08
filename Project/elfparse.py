@@ -30,4 +30,5 @@ def get_var_stack_offset(project, function_name, var_name):
     if id_tup in var_offset:
         return var_offset[id_tup]
     var_offset[id_tup] = get_var_offset(project.filename, function_name.encode('utf-8'), var_name.encode('utf-8'))
+    print("Offset for " + var_name + " is " + hex(var_offset[id_tup]))
     return var_offset[id_tup]

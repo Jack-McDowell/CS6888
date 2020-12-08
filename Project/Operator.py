@@ -69,7 +69,7 @@ def int_unif(op1, op2, state):
         if bc1 > bc2 and not type(v2) is int:
             v2 = v2.sign_extend(bc1 - bc2) if t2.signed else v2.zero_extend(bc1 - bc2)
         elif bc2 > bc1 and not type(v1) is int: 
-            v1 = v1.sign_extend(bc2 - bc1) if t1.signed else v1.zero_extend(bc2 = bc1)
+            v1 = v1.sign_extend(bc2 - bc1) if t1.signed else v1.zero_extend(bc2 - bc1)
 
     return (v1, v2, t1, t2)
 
