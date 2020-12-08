@@ -68,7 +68,7 @@ class Invariant:
 
 
 
-def parse_tree(tree, variables):
+def parse_tree(tree, variables, req_type=None):
     # TODO: Handle NEXT, RETURN, and INDEX
     if isinstance(tree, InvariantParser.FunAppExprContext):
         func_name = tree.getChild(0).getChild(0).symbol.text
@@ -87,8 +87,10 @@ def parse_tree(tree, variables):
     token = tree.getChild(op)
     if token is None:
         if re.fullmatch('[0-9]+', tree.symbol.text):
-            return ASTNode(Operator.LITERAL, [tree.symbol.text, ExprType(Type.BV64, 0)])
+            return ASTNode(Operator.LITERAL, [tree.symbol.text, ExprType(Type.BV64, pointers=0, signed=int(tree.symbol.text) <= 2 ** 63 - 1)])
         else:
+            if tree.symbol.text == "true" or tree.symbol.text == "false":
+                return ASTNode(Operator.LITERAL, [token.symbol.text == "true", ExprType(Type.BOOL, 0)])
             assert(tree.symbol.text in variables)
             return ASTNode(Operator.VAR,
                            [tree.symbol.text, variables[tree.symbol.text][0], variables[tree.symbol.text][1]])
@@ -187,7 +189,8 @@ def parse_tree(tree, variables):
         operator = Operator.BNOT
         return ASTNode(operator, [operand_one])
     elif re.fullmatch('[0-9]+', token.symbol.text):
-        return ASTNode(Operator.LITERAL, [token.symbol.text, ExprType(Type.BV64, 0)])
+        return ASTNode(Operator.LITERAL,
+                       [tree.symbol.text, ExprType(Type.BV64, pointers=0, signed=int(tree.symbol.text) <= 2 ** 63 - 1)])
     else:
         if token.symbol.text == "true" or token.symbol.text == "false":
             return ASTNode(Operator.LITERAL, [token.symbol.text == "true", ExprType(Type.BOOL, 0)])
@@ -221,13 +224,12 @@ def parse_invariants(file_name, project):
                     else:
                         break
 
-                #Create variables
+                # Create variables
                 for var in args:
                     var = var.strip()
                     s = var.split(' ')[0]
                     type = var.split(' ')[1]
                     var = var.split(' ')[2]
-                    #TODO: ID Scope
                     scope = GlobalScope(project)
                     if s == 'local':
                         scope = inv_scope
@@ -251,7 +253,7 @@ def parse_invariants(file_name, project):
                         else:
                             expr_type = ExprType(Type.BV64, pointers=pointers, signed=signed)
                     else:
-                        # Throw error
+                        # TODO: Throw error in a better way
                         assert False
                     variables[var] = (expr_type, scope)
                 expression = match.group(5)
