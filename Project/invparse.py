@@ -67,8 +67,33 @@ class Invariant:
             self.event = Event.AlwaysEvent(con_expr, self.scope, self.ast, self.str_expr)
 
 
+def get_type_from_str(type):
+    expr_type = None
+    bool_reg = "bool(\**)"
+    bool_match = re.match(bool_reg, type)
+    num_reg = "(u?)num(8|16|32|64)(\**)"
+    num_match = re.match(num_reg, type)
+    if bool_match is not None:
+        expr_type = ExprType(Type.BOOL, pointers=len(bool_match.group(1)))
+    elif num_match is not None:
+        signed = len(num_match.group(1)) == 0
+        size = int(num_match.group(2))
+        pointers = len(num_match.group(3))
+        if size == 8:
+            expr_type = ExprType(Type.BV8, pointers=pointers, signed=signed)
+        elif size == 16:
+            expr_type = ExprType(Type.BV16, pointers=pointers, signed=signed)
+        elif size == 32:
+            expr_type = ExprType(Type.BV32, pointers=pointers, signed=signed)
+        else:
+            expr_type = ExprType(Type.BV64, pointers=pointers, signed=signed)
+    else:
+        # TODO: Handle errors better
+        assert False
+    return expr_type
 
-def parse_tree(tree, variables, req_type=None):
+
+def parse_tree(tree, variables):
     # TODO: Handle NEXT, RETURN, and INDEX
     if isinstance(tree, InvariantParser.FunAppExprContext):
         func_name = tree.getChild(0).getChild(0).symbol.text
@@ -77,7 +102,7 @@ def parse_tree(tree, variables, req_type=None):
             operand_one = parse_tree(tree.getChild(2), variables)
             return ASTNode(Operator.NEXT, [operand_one])
         else:
-            operand_one = ExprType(Type.BV64, 0)
+            operand_one = get_type_from_str(tree.getChild(2).getChild(0).symbol.text)
             return ASTNode(Operator.RETN, [operand_one])
     elif isinstance(tree, InvariantParser.IndexExprContext):
         operand_one = parse_tree(tree.getChild(0), variables)
@@ -233,28 +258,7 @@ def parse_invariants(file_name, project):
                     scope = GlobalScope(project)
                     if s == 'local':
                         scope = inv_scope
-                    expr_type = None
-                    bool_reg = "bool(\**)"
-                    bool_match = re.match(bool_reg, type)
-                    num_reg = "(u?)num(8|16|32|64)(\**)"
-                    num_match = re.match(num_reg, type)
-                    if bool_match is not None:
-                        expr_type = ExprType(Type.BOOL, pointers=len(bool_match.group(1)))
-                    elif num_match is not None:
-                        signed = len(num_match.group(1)) == 0
-                        size = int(num_match.group(2))
-                        pointers = len(num_match.group(3))
-                        if size == 8:
-                            expr_type = ExprType(Type.BV8, pointers=pointers, signed=signed)
-                        elif size == 16:
-                            expr_type = ExprType(Type.BV16, pointers=pointers, signed=signed)
-                        elif size == 32:
-                            expr_type = ExprType(Type.BV32, pointers=pointers, signed=signed)
-                        else:
-                            expr_type = ExprType(Type.BV64, pointers=pointers, signed=signed)
-                    else:
-                        # TODO: Throw error in a better way
-                        assert False
+                    expr_type = get_type_from_str(type)
                     variables[var] = (expr_type, scope)
                 expression = match.group(5)
                 invariant = Invariant(inv_scope, variables, expression)
@@ -262,6 +266,7 @@ def parse_invariants(file_name, project):
                 invariants.append(invariant.event)
             x += 1
     return invariants
+
 
 if __name__ == "__main__":
     parse_invariants("../tests/query_direct.c", None)
