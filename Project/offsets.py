@@ -33,6 +33,7 @@ from elftools.dwarf.descriptions import (
 from elftools.dwarf.locationlists import (
     LocationEntry, LocationExpr, LocationParser)
 from elftools.dwarf.dwarf_expr import DWARFExprParser
+from elftools.dwarf.callframe import FDE
 
 def get_func_bounds(filename, function_name):
     with open(filename, 'rb') as f:
@@ -110,6 +111,7 @@ def get_var_offset(filename, function_name, var_name):
         loc_parser = LocationParser(location_lists)
 
         for CU in dwarfinfo.iter_CUs():
+            print("HERE")
             # DWARFInfo allows to iterate over the compile units contained in
             # the .debug_info section. CU is a CompileUnit object, with some
             # computed attributes (such as its offset in the section) and
@@ -121,6 +123,7 @@ def get_var_offset(filename, function_name, var_name):
                 # Find the function
                 if DIE.tag == "DW_TAG_subprogram":
                     fname = ""
+                    base = 0
                     for attr in itervalues(DIE.attributes):
                         if attr.name == "DW_AT_name":
                             fname = attr.value
@@ -146,7 +149,15 @@ def get_var_offset(filename, function_name, var_name):
                                 if right_name:
                                     return location
 
-def get_var_name(filename, function_name, offset):
+def get_frame_base(filename, pc, rebased_addr):
+    """
+    Call to get frame base
+    :param filename: name of the executable file
+    :param pc: The address of the beginning of the function
+    :param rebased_addr: Should be project.loader.memory.min_addr
+    :return: the frame base for the function
+    """
+    target_loc = pc - rebased_addr
     with open(filename, 'rb') as f:
         elffile = ELFFile(f)
 
@@ -158,12 +169,23 @@ def get_var_name(filename, function_name, offset):
         # starting point for all DWARF-based processing in pyelftools.
         dwarfinfo = elffile.get_dwarf_info()
 
-        # The location lists are extracted by DWARFInfo from the .debug_loc
-        # section, and returned here as a LocationLists object.
-        location_lists = dwarfinfo.location_lists()
-
         # This is required for the descriptions module to correctly decode
         # register names contained in DWARF expressions.
         set_global_machine_arch(elffile.get_machine_arch())
 
-        # Create a LocationParser object that parses the DIE attributes a
+        min_greater = 1000000000000000000000
+        offset = 0
+        for CFI in dwarfinfo.EH_CFI_entries():
+            if isinstance(CFI, FDE):
+                decoded = CFI.get_decoded()
+                for entry in decoded.table:
+                    if entry['pc'] > target_loc and entry['pc'] < min_greater:
+                        offset = entry['cfa'].offset
+                        min_greater = entry['pc']
+        return offset
+
+
+# if __name__ == "__main__":
+#     print(get_func_bounds("C:/Users/WillMayes/ProgramAnalysis/test", b'special'))
+#     print(get_frame_base("C:/Users/WillMayes/ProgramAnalysis/test", 4195914, 4194304))
+#     print(get_var_offset("C:/Users/WillMayes/ProgramAnalysis/test", b'special', b'secret'))
