@@ -1,4 +1,4 @@
-// INVARIANT(arg, local): WRITE(local) -> NEXT(local) > arg
+// INVARIANT(local num32 arg, local num32 local): RETURN(func) -> local > arg
 void func(int arg){
 	int local = arg ^ 1;
 }

@@ -4,8 +4,7 @@
 const char* secret = "secret123";
 char allowed = 0;
 
-// INVARIANT(global allowed, global secret): READ(secret) -> allowed
-
+// INVARIANT(global unum8 allowed, global unum8* secret): READ(secret) -> allowed
 void execute_query(const char* query){
 	if(strstr(query, "secret")){
 		if(allowed){

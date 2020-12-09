@@ -16,7 +16,7 @@ const char** strings[] = {
 };
 char is_admin;
 
-// INVARIANT(is_admin, password): READ(password) -> is_admin
+// INVARIANT(global num8 is_admin, global num8* password): READ(password) -> is_admin
 void execute_query(const char* query){
 	if(strstr(query, "secret")){
 		if(is_admin){

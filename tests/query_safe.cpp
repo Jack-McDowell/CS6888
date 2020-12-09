@@ -3,7 +3,7 @@
 
 const char* password = "secret123";
 
-// INVARIANT(is_admin, password): READ(password) -> is_admin
+// INVARIANT(local num8 is_admin, global num8* password): READ(password) -> is_admin
 void execute_query(const char* query, char is_admin){
 	if(strstr(query, "secret")){
 		if(is_admin){

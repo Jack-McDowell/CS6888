@@ -7,7 +7,7 @@ int special(){
 	return printf("%d", secret);
 }
 
-// INVARIANT(secret): CALL(special) -> allowed == 1
+// INVARIANT(global num8 allowed): CALL(special) -> allowed == 1
 int main(int argc, char** argv){
 	if(argc != 2){
 		return -1;

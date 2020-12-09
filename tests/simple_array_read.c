@@ -16,7 +16,7 @@ long long* arr[] = {
 	&not_secret,
 };
 
-// INVARIANT(secret): READ(secret) -> false
+// INVARIANT(global num64 secret): READ(secret) -> false
 int main(int argc, char** argv){
 	if(argc != 2){
 		return -1;
