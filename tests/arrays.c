@@ -3,7 +3,7 @@ int arr[4] = {
 };
 int idx = 0;
 
-// INVARIANT(global num32* arr, global num32 idx): WRITE(arr[2]) -> arr[idx] <= NEXT(arr[2])
+// INVARIANT(global num32 arr, global num32 idx): WRITE(arr[2]) -> arr[idx] <= NEXT(arr[2])
 int main(int argc, char** argv){
 	if(argc != 2){
 		return -1;

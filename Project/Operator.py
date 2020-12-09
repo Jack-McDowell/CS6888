@@ -30,17 +30,16 @@ def combine_int(type1, type2):
     return ExprType(type1.t if type1.t.value > type2.t.value else type2.t, signed=type1.signed)
 
 def deref_type(type1):
-    assert(type1.pointers > 0)
+    return ExprType(type1.t, type1.pointers - 1 if type1.pointers > 0 else 0, type1.signed)
 
-    return ExprType(type1.t, type1.pointers - 1, type1.signed)
-
-def perform_deref(state, ptr, lval):
+def perform_deref(state, ptr, size, lval):
     if lval:
         return ptr
     else:
-        return state.memory.load(ptr, ptr.get_type().get_pointed_size(),
+        res = state.memory.load(ptr, size,
                                  disable_actions=True, inspect=False, 
-                                 endness=archinfo.Endness.LE),
+                                 endness=archinfo.Endness.LE)
+        return res
 
 def return_cast(val, tp):
     if tp.pointers > 0:
@@ -102,14 +101,15 @@ def signed_gt(op1, op2, state):
 
     return claripy.If(claripy.SLT(v1 if t1.signed else v2, 0), not t1.signed, v1 > v2)
 
-def perform_access(state, struct, offset, lval):
-    array_ptr = not struct.get_type().pointers == 0
-    ptr = struct.get_sym(state, not array_ptr) + struct + offset
-    return perform_deref(state, ptr, lval)
+def perform_access(state, struct, offset, size, lval):
+    array_ptr = struct.get_type().pointers > 0
+    ptr = struct.get_sym(state, not array_ptr)
+    return perform_deref(state, ptr + offset, size, lval)
 
 def perform_index(state, arr_node, idx_node, lval):
     offset = arr_node.get_type().get_pointed_size() * idx_node.get_sym(state)
-    return perform_access(state, arr_node, offset, lval)
+    res = perform_access(state, arr_node, offset, arr_node.get_type().get_pointed_size(), lval)
+    return res
 
 class Operator:
     def __init__(self, output, angrify, typer, operands):
@@ -217,13 +217,13 @@ Operator.LT = Operator(
 
 Operator.GE = Operator(
     lambda operands: "(" + operands[0] + " >= " + operands[1] + ")",
-    lambda operands, state, lval: (claripy.Not(signed_lt(operands[0], operands[1]), state), False),
+    lambda operands, state, lval: (claripy.Not(signed_lt(operands[0], operands[1], state)), False),
     lambda operands, lval: Type.BOOL,
     2)
 
 Operator.LE = Operator(
     lambda operands: "(" + operands[0] + " <= " + operands[1] + ")",
-    lambda operands, state, lval: (claripy.Not(signed_gt(operands[0], operands[1]), state), False),
+    lambda operands, state, lval: (claripy.Not(signed_gt(operands[0], operands[1], state)), False),
     lambda operands, lval: Type.BOOL,
     2)
 
@@ -248,9 +248,9 @@ Operator.LNOT = Operator(
     2)
 
 Operator.DEREF = Operator(
-    lambda operands: "*" + operands[0],
+    lambda operands: "*(" + operands[0] + ")",
     lambda operands, state, lval: 
-        (perform_deref(state, operands[0].get_sym(state), lval), True),
+        (perform_deref(state, operands[0].get_sym(state), operands[0].get_type().get_pointed_size(), lval), True),
     lambda operands, lval: operands[0] if lval else deref_type(operands[0]),
     1)
 
@@ -262,7 +262,7 @@ Operator.INDEX = Operator(
 
 Operator.ACCESS = Operator(
     lambda operands: "*(???*)((char*) " + operands[0] + " + " + operands[1] + ")",
-    lambda operands, state, lval: (perform_access(state, operands[0], operands[1], lval), True),
+    lambda operands, state, lval: (perform_access(state, operands[0], operands[1], operands[2].get_pointed_size(), lval), True),
     lambda operands, lval: operands[2] if lval else deref_type(operands[2]),
     3)
 

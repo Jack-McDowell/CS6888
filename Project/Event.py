@@ -90,7 +90,7 @@ class CallEvent(Event):
             if self.fn == None:
                 return True
             # print(str(state.inspect.function_address))
-            return state.inspect.function_address == self.fn.rebased_addr
+            return state.inspect.function_address == self.fn
         else:
             return False
 
@@ -105,7 +105,6 @@ class ReturnEvent(Event):
     def subscribe(self, state):
         ReturnEvent.events.append(self)
         if not ReturnEvent.subscribed:
-            print("Subscribing")
             ReturnEvent.subscribed = True
             state.inspect.b("return", when=angr.BP_BEFORE, 
                             action=lambda state: Event.breakpoint(self, state))
