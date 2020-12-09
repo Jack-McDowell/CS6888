@@ -96,7 +96,6 @@ def get_type_from_str(type):
 
 def parse_tree(tree, variables):
     if isinstance(tree, InvariantParser.FunAppExprContext):
-        func_name = ""
         func_tok = tree.getChild(0)
         if func_tok.getChild(0) is None:
             func_name = func_tok.symbol.text
@@ -107,7 +106,12 @@ def parse_tree(tree, variables):
             operand_one = parse_tree(tree.getChild(2), variables)
             return ASTNode(Operator.NEXT, [operand_one])
         else:
-            operand_one = get_type_from_str(tree.getChild(2).getChild(0).symbol.text)
+            type_tok = tree.getChild(2)
+            if type_tok.getChild(0) is None:
+                type_name = type_tok.symbol.text
+            else:
+                type_name = type_tok.getChild(0).symbol.text
+            operand_one = get_type_from_str(type_name)
             return ASTNode(Operator.RETN, [operand_one])
     elif isinstance(tree, InvariantParser.IndexExprContext):
         operand_one = parse_tree(tree.getChild(0), variables)
