@@ -179,17 +179,7 @@ def operators_test():
 
 def test_all():
     files = [
-        #"simple_read",
-        #"simple_cond_read",
-        #"simple_read_cond",
-        #"simple_cond_read_cond",
-        #"simple_cond_write_cond",
-        #"simple_array_read",
-        #"next_definition",
-        #"locals",
-        #"arrays",
-        #"simple_cond_call_cond",
-        "return"
+        "ssl"
     ]
 
     for f in files:
