@@ -8,37 +8,34 @@ import sys
 def serializedATN():
     with StringIO() as buf:
         buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\36")
-        buf.write("T\4\2\t\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2")
-        buf.write("\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\5\2\32\n\2\3")
+        buf.write("I\4\2\t\2\3\2\3\2\3\2\3\2\5\2\t\n\2\3\2\3\2\3\2\3\2\3")
+        buf.write("\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\5\2")
+        buf.write("\34\n\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3")
         buf.write("\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2")
-        buf.write("\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3")
-        buf.write("\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\7\2?\n\2\f\2\16\2B\13\2")
-        buf.write("\5\2D\n\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\7\2O\n\2")
-        buf.write("\f\2\16\2R\13\2\3\2\2\3\2\3\2\2\6\3\2\n\13\3\2\f\r\3\2")
-        buf.write("\16\21\3\2\22\23\2i\2\31\3\2\2\2\4\5\b\2\1\2\5\6\7\n\2")
-        buf.write("\2\6\32\5\2\2\26\7\b\7\r\2\2\b\32\7\34\2\2\t\n\7\27\2")
-        buf.write("\2\n\32\5\2\2\24\13\f\7\t\2\2\f\r\5\2\2\2\r\16\7\5\2\2")
-        buf.write("\16\32\3\2\2\2\17\20\7\33\2\2\20\32\5\2\2\t\21\22\7\32")
-        buf.write("\2\2\22\32\5\2\2\6\23\32\7\35\2\2\24\32\7\34\2\2\25\26")
-        buf.write("\7\3\2\2\26\27\5\2\2\2\27\30\7\5\2\2\30\32\3\2\2\2\31")
-        buf.write("\4\3\2\2\2\31\7\3\2\2\2\31\t\3\2\2\2\31\13\3\2\2\2\31")
-        buf.write("\17\3\2\2\2\31\21\3\2\2\2\31\23\3\2\2\2\31\24\3\2\2\2")
-        buf.write("\31\25\3\2\2\2\32P\3\2\2\2\33\34\f\23\2\2\34\35\7\24\2")
-        buf.write("\2\35O\5\2\2\24\36\37\f\22\2\2\37 \t\2\2\2 O\5\2\2\23")
-        buf.write("!\"\f\21\2\2\"#\t\3\2\2#O\5\2\2\22$%\f\16\2\2%&\t\4\2")
-        buf.write("\2&O\5\2\2\17\'(\f\r\2\2()\t\5\2\2)O\5\2\2\16*+\f\f\2")
-        buf.write("\2+,\7\27\2\2,O\5\2\2\r-.\f\13\2\2./\7\31\2\2/O\5\2\2")
-        buf.write("\f\60\61\f\n\2\2\61\62\7\30\2\2\62O\5\2\2\13\63\64\f\b")
-        buf.write("\2\2\64\65\7\25\2\2\65O\5\2\2\t\66\67\f\7\2\2\678\7\26")
-        buf.write("\2\28O\5\2\2\b9:\f\30\2\2:C\7\3\2\2;@\5\2\2\2<=\7\4\2")
-        buf.write("\2=?\5\2\2\2><\3\2\2\2?B\3\2\2\2@>\3\2\2\2@A\3\2\2\2A")
-        buf.write("D\3\2\2\2B@\3\2\2\2C;\3\2\2\2CD\3\2\2\2DE\3\2\2\2EO\7")
-        buf.write("\5\2\2FG\f\27\2\2GH\7\6\2\2HO\7\35\2\2IJ\f\20\2\2JK\7")
-        buf.write("\7\2\2KL\5\2\2\2LM\7\b\2\2MO\3\2\2\2N\33\3\2\2\2N\36\3")
-        buf.write("\2\2\2N!\3\2\2\2N$\3\2\2\2N\'\3\2\2\2N*\3\2\2\2N-\3\2")
-        buf.write("\2\2N\60\3\2\2\2N\63\3\2\2\2N\66\3\2\2\2N9\3\2\2\2NF\3")
-        buf.write("\2\2\2NI\3\2\2\2OR\3\2\2\2PN\3\2\2\2PQ\3\2\2\2Q\3\3\2")
-        buf.write("\2\2RP\3\2\2\2\7\31@CNP")
+        buf.write("\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\7")
+        buf.write("\2D\n\2\f\2\16\2G\13\2\3\2\2\3\2\3\2\2\7\3\2\3\4\3\2\n")
+        buf.write("\13\3\2\f\r\3\2\16\21\3\2\22\23\2\\\2\33\3\2\2\2\4\5\b")
+        buf.write("\2\1\2\5\6\t\2\2\2\6\b\7\5\2\2\7\t\5\2\2\2\b\7\3\2\2\2")
+        buf.write("\b\t\3\2\2\2\t\n\3\2\2\2\n\34\7\6\2\2\13\f\7\n\2\2\f\34")
+        buf.write("\5\2\2\24\r\16\7\r\2\2\16\34\7\34\2\2\17\20\7\27\2\2\20")
+        buf.write("\34\5\2\2\22\21\22\7\33\2\2\22\34\5\2\2\t\23\24\7\32\2")
+        buf.write("\2\24\34\5\2\2\6\25\34\7\35\2\2\26\34\7\34\2\2\27\30\7")
+        buf.write("\5\2\2\30\31\5\2\2\2\31\32\7\6\2\2\32\34\3\2\2\2\33\4")
+        buf.write("\3\2\2\2\33\13\3\2\2\2\33\r\3\2\2\2\33\17\3\2\2\2\33\21")
+        buf.write("\3\2\2\2\33\23\3\2\2\2\33\25\3\2\2\2\33\26\3\2\2\2\33")
+        buf.write("\27\3\2\2\2\34E\3\2\2\2\35\36\f\21\2\2\36\37\7\24\2\2")
+        buf.write("\37D\5\2\2\22 !\f\20\2\2!\"\t\3\2\2\"D\5\2\2\21#$\f\17")
+        buf.write("\2\2$%\t\4\2\2%D\5\2\2\20&\'\f\16\2\2\'(\t\5\2\2(D\5\2")
+        buf.write("\2\17)*\f\r\2\2*+\t\6\2\2+D\5\2\2\16,-\f\f\2\2-.\7\27")
+        buf.write("\2\2.D\5\2\2\r/\60\f\13\2\2\60\61\7\31\2\2\61D\5\2\2\f")
+        buf.write("\62\63\f\n\2\2\63\64\7\30\2\2\64D\5\2\2\13\65\66\f\b\2")
+        buf.write("\2\66\67\7\25\2\2\67D\5\2\2\t89\f\7\2\29:\7\26\2\2:D\5")
+        buf.write("\2\2\b;<\f\26\2\2<=\7\7\2\2=D\7\35\2\2>?\f\25\2\2?@\7")
+        buf.write("\b\2\2@A\5\2\2\2AB\7\t\2\2BD\3\2\2\2C\35\3\2\2\2C \3\2")
+        buf.write("\2\2C#\3\2\2\2C&\3\2\2\2C)\3\2\2\2C,\3\2\2\2C/\3\2\2\2")
+        buf.write("C\62\3\2\2\2C\65\3\2\2\2C8\3\2\2\2C;\3\2\2\2C>\3\2\2\2")
+        buf.write("DG\3\2\2\2EC\3\2\2\2EF\3\2\2\2F\3\3\2\2\2GE\3\2\2\2\6")
+        buf.write("\b\33CE")
         return buf.getvalue()
 
 
@@ -52,10 +49,10 @@ class invariantParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'('", "','", "')'", "'.'", "'['", "']'", 
-                     "'NEXT('", "'*'", "'/'", "'+'", "'-'", "'>'", "'<'", 
-                     "'<='", "'>='", "'=='", "'!='", "'**'", "'&&'", "'||'", 
-                     "'&'", "'|'", "'^'", "'!'", "'~'" ]
+    literalNames = [ "<INVALID>", "'NEXT'", "'RETURN_VAL'", "'('", "')'", 
+                     "'.'", "'['", "']'", "'*'", "'/'", "'+'", "'-'", "'>'", 
+                     "'<'", "'<='", "'>='", "'=='", "'!='", "'**'", "'&&'", 
+                     "'||'", "'&'", "'|'", "'^'", "'!'", "'~'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
@@ -162,25 +159,6 @@ class invariantParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitNegNumber" ):
                 listener.exitNegNumber(self)
-
-
-    class NextExprContext(ExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a invariantParser.ExprContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def expr(self):
-            return self.getTypedRuleContext(invariantParser.ExprContext,0)
-
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterNextExpr" ):
-                listener.enterNextExpr(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitNextExpr" ):
-                listener.exitNextExpr(self)
 
 
     class BnotExprContext(ExprContext):
@@ -498,6 +476,25 @@ class invariantParser ( Parser ):
                 listener.exitLorExpr(self)
 
 
+    class FunAppExprContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a invariantParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def expr(self):
+            return self.getTypedRuleContext(invariantParser.ExprContext,0)
+
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunAppExpr" ):
+                listener.enterFunAppExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunAppExpr" ):
+                listener.exitFunAppExpr(self)
+
+
     class MultiplicativeExprContext(ExprContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a invariantParser.ExprContext
@@ -523,28 +520,6 @@ class invariantParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitMultiplicativeExpr" ):
                 listener.exitMultiplicativeExpr(self)
-
-
-    class FunAppExprContext(ExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a invariantParser.ExprContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def expr(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(invariantParser.ExprContext)
-            else:
-                return self.getTypedRuleContext(invariantParser.ExprContext,i)
-
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFunAppExpr" ):
-                listener.enterFunAppExpr(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFunAppExpr" ):
-                listener.exitFunAppExpr(self)
 
 
     class EqualityExprContext(ExprContext):
@@ -630,127 +605,140 @@ class invariantParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 23
+            self.state = 25
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [invariantParser.MUL]:
-                localctx = invariantParser.DeRefExprContext(self, localctx)
+            if token in [invariantParser.T__0, invariantParser.T__1]:
+                localctx = invariantParser.FunAppExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
 
                 self.state = 3
-                self.match(invariantParser.MUL)
+                _la = self._input.LA(1)
+                if not(_la==invariantParser.T__0 or _la==invariantParser.T__1):
+                    self._errHandler.recoverInline(self)
+                else:
+                    self._errHandler.reportMatch(self)
+                    self.consume()
                 self.state = 4
-                self.expr(20)
+                self.match(invariantParser.T__2)
+                self.state = 6
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << invariantParser.T__0) | (1 << invariantParser.T__1) | (1 << invariantParser.T__2) | (1 << invariantParser.MUL) | (1 << invariantParser.SUB) | (1 << invariantParser.BAND) | (1 << invariantParser.LNOT) | (1 << invariantParser.BNOT) | (1 << invariantParser.NUMBER) | (1 << invariantParser.IDENTIFIER))) != 0):
+                    self.state = 5
+                    self.expr(0)
+
+
+                self.state = 8
+                self.match(invariantParser.T__3)
+                pass
+            elif token in [invariantParser.MUL]:
+                localctx = invariantParser.DeRefExprContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
+                self.state = 9
+                self.match(invariantParser.MUL)
+                self.state = 10
+                self.expr(18)
                 pass
             elif token in [invariantParser.SUB]:
                 localctx = invariantParser.NegNumberContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 5
+                self.state = 11
                 self.match(invariantParser.SUB)
-                self.state = 6
+                self.state = 12
                 self.match(invariantParser.NUMBER)
                 pass
             elif token in [invariantParser.BAND]:
                 localctx = invariantParser.RefExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 7
+                self.state = 13
                 self.match(invariantParser.BAND)
-                self.state = 8
-                self.expr(18)
-                pass
-            elif token in [invariantParser.T__6]:
-                localctx = invariantParser.NextExprContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-                self.state = 9
-                self.match(invariantParser.T__6)
-                self.state = 10
-                self.expr(0)
-                self.state = 11
-                self.match(invariantParser.T__2)
+                self.state = 14
+                self.expr(16)
                 pass
             elif token in [invariantParser.BNOT]:
                 localctx = invariantParser.BnotExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 13
+                self.state = 15
                 self.match(invariantParser.BNOT)
-                self.state = 14
+                self.state = 16
                 self.expr(7)
                 pass
             elif token in [invariantParser.LNOT]:
                 localctx = invariantParser.NotExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 15
+                self.state = 17
                 self.match(invariantParser.LNOT)
-                self.state = 16
+                self.state = 18
                 self.expr(4)
                 pass
             elif token in [invariantParser.IDENTIFIER]:
                 localctx = invariantParser.VarExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 17
+                self.state = 19
                 self.match(invariantParser.IDENTIFIER)
                 pass
             elif token in [invariantParser.NUMBER]:
                 localctx = invariantParser.NumExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 18
+                self.state = 20
                 self.match(invariantParser.NUMBER)
                 pass
-            elif token in [invariantParser.T__0]:
+            elif token in [invariantParser.T__2]:
                 localctx = invariantParser.ParenExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 19
-                self.match(invariantParser.T__0)
-                self.state = 20
-                self.expr(0)
                 self.state = 21
                 self.match(invariantParser.T__2)
+                self.state = 22
+                self.expr(0)
+                self.state = 23
+                self.match(invariantParser.T__3)
                 pass
             else:
                 raise NoViableAltException(self)
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 78
+            self.state = 67
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,4,self._ctx)
+            _alt = self._interp.adaptivePredict(self._input,3,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    self.state = 76
+                    self.state = 65
                     self._errHandler.sync(self)
-                    la_ = self._interp.adaptivePredict(self._input,3,self._ctx)
+                    la_ = self._interp.adaptivePredict(self._input,2,self._ctx)
                     if la_ == 1:
                         localctx = invariantParser.ExponentiationExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 25
-                        if not self.precpred(self._ctx, 17):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 17)")
-                        self.state = 26
-                        self.match(invariantParser.EXP)
                         self.state = 27
-                        self.expr(18)
+                        if not self.precpred(self._ctx, 15):
+                            from antlr4.error.Errors import FailedPredicateException
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 15)")
+                        self.state = 28
+                        self.match(invariantParser.EXP)
+                        self.state = 29
+                        self.expr(16)
                         pass
 
                     elif la_ == 2:
                         localctx = invariantParser.MultiplicativeExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 28
-                        if not self.precpred(self._ctx, 16):
+                        self.state = 30
+                        if not self.precpred(self._ctx, 14):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 16)")
-                        self.state = 29
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 14)")
+                        self.state = 31
                         localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not(_la==invariantParser.MUL or _la==invariantParser.DIV):
@@ -758,18 +746,18 @@ class invariantParser ( Parser ):
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
-                        self.state = 30
-                        self.expr(17)
+                        self.state = 32
+                        self.expr(15)
                         pass
 
                     elif la_ == 3:
                         localctx = invariantParser.AdditiveExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 31
-                        if not self.precpred(self._ctx, 15):
+                        self.state = 33
+                        if not self.precpred(self._ctx, 13):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 15)")
-                        self.state = 32
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 13)")
+                        self.state = 34
                         localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not(_la==invariantParser.ADD or _la==invariantParser.SUB):
@@ -777,18 +765,18 @@ class invariantParser ( Parser ):
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
-                        self.state = 33
-                        self.expr(16)
+                        self.state = 35
+                        self.expr(14)
                         pass
 
                     elif la_ == 4:
                         localctx = invariantParser.RelationalExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 34
+                        self.state = 36
                         if not self.precpred(self._ctx, 12):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 12)")
-                        self.state = 35
+                        self.state = 37
                         localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << invariantParser.GT) | (1 << invariantParser.LT) | (1 << invariantParser.GTE) | (1 << invariantParser.LTE))) != 0)):
@@ -796,18 +784,18 @@ class invariantParser ( Parser ):
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
-                        self.state = 36
+                        self.state = 38
                         self.expr(13)
                         pass
 
                     elif la_ == 5:
                         localctx = invariantParser.EqualityExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 37
+                        self.state = 39
                         if not self.precpred(self._ctx, 11):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 11)")
-                        self.state = 38
+                        self.state = 40
                         localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not(_la==invariantParser.EQ or _la==invariantParser.NE):
@@ -815,140 +803,107 @@ class invariantParser ( Parser ):
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
-                        self.state = 39
+                        self.state = 41
                         self.expr(12)
                         pass
 
                     elif la_ == 6:
                         localctx = invariantParser.BandExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 40
+                        self.state = 42
                         if not self.precpred(self._ctx, 10):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 10)")
-                        self.state = 41
+                        self.state = 43
                         self.match(invariantParser.BAND)
-                        self.state = 42
+                        self.state = 44
                         self.expr(11)
                         pass
 
                     elif la_ == 7:
                         localctx = invariantParser.BxorExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 43
+                        self.state = 45
                         if not self.precpred(self._ctx, 9):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 9)")
-                        self.state = 44
+                        self.state = 46
                         self.match(invariantParser.BXOR)
-                        self.state = 45
+                        self.state = 47
                         self.expr(10)
                         pass
 
                     elif la_ == 8:
                         localctx = invariantParser.BorExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 46
+                        self.state = 48
                         if not self.precpred(self._ctx, 8):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 8)")
-                        self.state = 47
+                        self.state = 49
                         self.match(invariantParser.BOR)
-                        self.state = 48
+                        self.state = 50
                         self.expr(9)
                         pass
 
                     elif la_ == 9:
                         localctx = invariantParser.LandExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 49
+                        self.state = 51
                         if not self.precpred(self._ctx, 6):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 6)")
-                        self.state = 50
+                        self.state = 52
                         self.match(invariantParser.LAND)
-                        self.state = 51
+                        self.state = 53
                         self.expr(7)
                         pass
 
                     elif la_ == 10:
                         localctx = invariantParser.LorExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 52
+                        self.state = 54
                         if not self.precpred(self._ctx, 5):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
-                        self.state = 53
+                        self.state = 55
                         self.match(invariantParser.LOR)
-                        self.state = 54
+                        self.state = 56
                         self.expr(6)
                         pass
 
                     elif la_ == 11:
-                        localctx = invariantParser.FunAppExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
-                        self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 55
-                        if not self.precpred(self._ctx, 22):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 22)")
-                        self.state = 56
-                        self.match(invariantParser.T__0)
-                        self.state = 65
-                        self._errHandler.sync(self)
-                        _la = self._input.LA(1)
-                        if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << invariantParser.T__0) | (1 << invariantParser.T__6) | (1 << invariantParser.MUL) | (1 << invariantParser.SUB) | (1 << invariantParser.BAND) | (1 << invariantParser.LNOT) | (1 << invariantParser.BNOT) | (1 << invariantParser.NUMBER) | (1 << invariantParser.IDENTIFIER))) != 0):
-                            self.state = 57
-                            self.expr(0)
-                            self.state = 62
-                            self._errHandler.sync(self)
-                            _la = self._input.LA(1)
-                            while _la==invariantParser.T__1:
-                                self.state = 58
-                                self.match(invariantParser.T__1)
-                                self.state = 59
-                                self.expr(0)
-                                self.state = 64
-                                self._errHandler.sync(self)
-                                _la = self._input.LA(1)
-
-
-
-                        self.state = 67
-                        self.match(invariantParser.T__2)
-                        pass
-
-                    elif la_ == 12:
                         localctx = invariantParser.AccessExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 68
-                        if not self.precpred(self._ctx, 21):
+                        self.state = 57
+                        if not self.precpred(self._ctx, 20):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 21)")
-                        self.state = 69
-                        self.match(invariantParser.T__3)
-                        self.state = 70
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 20)")
+                        self.state = 58
+                        self.match(invariantParser.T__4)
+                        self.state = 59
                         self.match(invariantParser.IDENTIFIER)
                         pass
 
-                    elif la_ == 13:
+                    elif la_ == 12:
                         localctx = invariantParser.IndexExprContext(self, invariantParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 71
-                        if not self.precpred(self._ctx, 14):
+                        self.state = 60
+                        if not self.precpred(self._ctx, 19):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 14)")
-                        self.state = 72
-                        self.match(invariantParser.T__4)
-                        self.state = 73
-                        self.expr(0)
-                        self.state = 74
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 19)")
+                        self.state = 61
                         self.match(invariantParser.T__5)
+                        self.state = 62
+                        self.expr(0)
+                        self.state = 63
+                        self.match(invariantParser.T__6)
                         pass
 
              
-                self.state = 80
+                self.state = 69
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,4,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,3,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -972,15 +927,15 @@ class invariantParser ( Parser ):
 
     def expr_sempred(self, localctx:ExprContext, predIndex:int):
             if predIndex == 0:
-                return self.precpred(self._ctx, 17)
+                return self.precpred(self._ctx, 15)
          
 
             if predIndex == 1:
-                return self.precpred(self._ctx, 16)
+                return self.precpred(self._ctx, 14)
          
 
             if predIndex == 2:
-                return self.precpred(self._ctx, 15)
+                return self.precpred(self._ctx, 13)
          
 
             if predIndex == 3:
@@ -1012,15 +967,11 @@ class invariantParser ( Parser ):
          
 
             if predIndex == 10:
-                return self.precpred(self._ctx, 22)
+                return self.precpred(self._ctx, 20)
          
 
             if predIndex == 11:
-                return self.precpred(self._ctx, 21)
-         
-
-            if predIndex == 12:
-                return self.precpred(self._ctx, 14)
+                return self.precpred(self._ctx, 19)
          
 
 

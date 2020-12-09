@@ -4,13 +4,13 @@ grammar invariant;
 
 expr : ('NEXT' | 'RETURN_VAL') '(' (expr)? ')' 	#funAppExpr
      |expr '.' IDENTIFIER 			#accessExpr
+     | expr '[' expr ']'    			#indexExpr
      | '*' expr 				#deRefExpr
      | SUB NUMBER				#negNumber
      | '&' expr					#refExpr
      | expr EXP expr       			#exponentiationExpr
      | expr op=(MUL | DIV) expr 		#multiplicativeExpr
      | expr op=(ADD | SUB) expr 		#additiveExpr
-     | expr '[' expr ']'    			#indexExpr
      | expr op=(GT | GTE | LT | LTE) expr 	#relationalExpr
      | expr op=(EQ | NE) expr 			#equalityExpr
      | expr BAND expr     			#bandExpr
