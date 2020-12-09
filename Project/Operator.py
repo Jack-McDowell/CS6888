@@ -38,7 +38,7 @@ def perform_deref(state, ptr, lval):
     if lval:
         return ptr
     else:
-        return state.memory.load(ptr, operands[0].get_type().get_pointed_size(),
+        return state.memory.load(ptr, ptr.get_type().get_pointed_size(),
                                  disable_actions=True, inspect=False, 
                                  endness=archinfo.Endness.LE),
 
@@ -103,12 +103,12 @@ def signed_gt(op1, op2, state):
     return claripy.If(claripy.SLT(v1 if t1.signed else v2, 0), not t1.signed, v1 > v2)
 
 def perform_access(state, struct, offset, lval):
-    array_ptr = not operands[0].get_type().pointers == 0
-    ptr = operands[0].get_sym(state, not array_ptr) + operands[0] + offset
+    array_ptr = not struct.get_type().pointers == 0
+    ptr = struct.get_sym(state, not array_ptr) + struct + offset
     return perform_deref(state, ptr, lval)
 
 def perform_index(state, arr_node, idx_node, lval):
-    offset = operands[0].get_type().get_pointed_size() * operands[1].get_sym(state)
+    offset = arr_node.get_type().get_pointed_size() * idx_node.get_sym(state)
     return perform_access(state, arr_node, offset, lval)
 
 class Operator:

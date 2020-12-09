@@ -197,6 +197,8 @@ def test_all():
         print("Preparing test " + f)
         proj = angr.Project("../test")
         invs = parse_invariants("../tests/" + f + ".c", proj)
+        for inv in invs:
+            print("Invariant: " + inv.general_constraint.stringify())
         Engine(proj, invs).run()
 
     
