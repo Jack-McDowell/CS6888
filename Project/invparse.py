@@ -112,10 +112,12 @@ def parse_tree(tree, variables):
     token = tree.getChild(op)
     if token is None:
         if re.fullmatch('[0-9]+', tree.symbol.text):
-            return ASTNode(Operator.LITERAL, [tree.symbol.text, ExprType(Type.BV64, pointers=0, signed=int(tree.symbol.text) <= 2 ** 63 - 1)])
+            return ASTNode(Operator.LITERAL, [int(tree.symbol.text),
+                                              ExprType(Type.BV64, pointers=0,
+                                                       signed=int(tree.symbol.text) <= 2 ** 63 - 1)])
         else:
             if tree.symbol.text == "true" or tree.symbol.text == "false":
-                return ASTNode(Operator.LITERAL, [token.symbol.text == "true", ExprType(Type.BOOL, 0)])
+                return ASTNode(Operator.LITERAL, [tree.symbol.text == "true", ExprType(Type.BOOL, 0)])
             assert(tree.symbol.text in variables)
             return ASTNode(Operator.VAR,
                            [tree.symbol.text, variables[tree.symbol.text][0], variables[tree.symbol.text][1]])
@@ -215,7 +217,7 @@ def parse_tree(tree, variables):
         return ASTNode(operator, [operand_one])
     elif re.fullmatch('[0-9]+', token.symbol.text):
         return ASTNode(Operator.LITERAL,
-                       [token.symbol.text, ExprType(Type.BV64, pointers=0, signed=int(token.symbol.text) <= 2 ** 63 - 1)])
+                       [int(token.symbol.text), ExprType(Type.BV64, pointers=0, signed=int(token.symbol.text) <= 2 ** 63 - 1)])
     else:
         if token.symbol.text == "true" or token.symbol.text == "false":
             return ASTNode(Operator.LITERAL, [token.symbol.text == "true", ExprType(Type.BOOL, 0)])
