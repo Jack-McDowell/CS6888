@@ -241,7 +241,7 @@ def parse_invariants(file_name, project):
         lines = f.readlines()
         invariants = []
         inv_reg = '^// ?INVARIANT\\(((([^)]*),)*([^)]*)?)\\):(.*)'
-        func_reg = '[A-z]+ +([A-z_]+)(\(| )'
+        func_reg = '[A-z]+ +([A-z_0-9]+)(\(| )'
         for line in lines:
             line = line.strip()
             match = re.match(inv_reg, line)
@@ -264,12 +264,12 @@ def parse_invariants(file_name, project):
                 for var in args:
                     var = var.strip()
                     s = var.split(' ')[0]
-                    type = var.split(' ')[1]
+                    typ = var.split(' ')[1]
                     var = var.split(' ')[2]
                     scope = GlobalScope(project)
                     if s == 'local':
                         scope = inv_scope
-                    expr_type = get_type_from_str(type)
+                    expr_type = get_type_from_str(typ)
                     variables[var] = (expr_type, scope)
                 expression = match.group(5)
                 invariant = Invariant(inv_scope, variables, expression, project)

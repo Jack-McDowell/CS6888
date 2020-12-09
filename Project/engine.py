@@ -16,5 +16,5 @@ class Engine:
         print(evt.stmt + " was violated by input " + str(state.solver.eval(self.inp, extra_constraints=conds, cast_to=bytes)))
 
     def run(self):
-        self.simgr = self.proj.factory.simgr(self.state)
+        self.simgr = self.proj.factory.simgr(self.state, resilience=None)
         self.simgr.explore()

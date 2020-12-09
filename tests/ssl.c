@@ -1,14 +1,13 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdio.h>
-char * secret;
-
-// INVARIANT(global num8* msg, global num32 len): READ(msg[len]) -> false
 
 //Modified heartbeat processing function for POC
-//This function has the same basic bug as heartbleed, although it removes some of the fluff that makes
-//this function actually perform ssl and breaks it down to the bearbones requirement to emulate the memory leak
-int dtls1_process_heartbeat(char *pl, unsigned int payload){
+//This function has the same basic bug as heartbleed, although it removes some of the utility functions as well as the
+//component responsible for actually sending the leaked data back. However, the key vulnerability and the same logic
+//remains present
+// INVARIANT(local num8* pl, local unum64 pl_len): READ(pl[pl_len]) -> false
+int dtls1_process_heartbeat(char *pl, unsigned int payload, unsigned long long pl_len){
     unsigned char *buffer, * bp;
     int r;
     unsigned short hbtype;
@@ -34,19 +33,16 @@ int dtls1_process_heartbeat(char *pl, unsigned int payload){
     puts(bp);
     return 0;
 }
-char *msg;
 char *gib = "AFDBNADGINOPKFNWPOIBDANK:NSFPQIOBNNDAFKJQWIOPJGNBAPSOFI:QKBNEIOJW:AKNBIEO:JFAKFNGOEIBJE:AFJKAFJ";
-int len;
-int cpyLen;
 
 int main(int argc, char **argv){
-    if(argc != 3){
+    if(argc != 2){
         return -1;
     }
-    int len = argv[1][0] - 'a';
-    int cpyLen = argv[2][0] - 'a';
-    msg = (char *)malloc(len);
+    int len = argv[1][0];
+    int cpyLen = argv[1][1];
+    char* msg = (char *)malloc(len);
     memcpy(msg, gib, len);
-    dtls1_process_heartbeat(msg, cpyLen);
+    dtls1_process_heartbeat(msg, cpyLen, len);
     return 0;
 }

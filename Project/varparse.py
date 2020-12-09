@@ -15,6 +15,7 @@ class Scope:
 
 class GlobalScope(Scope):
     def eval_variable_address(self, state, name):
+        print(name)
         addr = self.project.loader.find_symbol(name).rebased_addr
         return addr
 
