@@ -215,7 +215,7 @@ def parse_tree(tree, variables):
         return ASTNode(operator, [operand_one])
     elif re.fullmatch('[0-9]+', token.symbol.text):
         return ASTNode(Operator.LITERAL,
-                       [tree.symbol.text, ExprType(Type.BV64, pointers=0, signed=int(tree.symbol.text) <= 2 ** 63 - 1)])
+                       [token.symbol.text, ExprType(Type.BV64, pointers=0, signed=int(token.symbol.text) <= 2 ** 63 - 1)])
     else:
         if token.symbol.text == "true" or token.symbol.text == "false":
             return ASTNode(Operator.LITERAL, [token.symbol.text == "true", ExprType(Type.BOOL, 0)])
