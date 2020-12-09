@@ -33,6 +33,4 @@ def get_var_stack_offset(project, function_name, var_name, base):
     # COMMENT OUT THE BELOW LINE TO GET WRONG OFFSET
     # GETS RIGHT OFFSET FOR locals.c AT LEAST
     var_offset[id_tup] += get_frame_base(project.filename, base, project.loader.main_object.mapped_base)
-    print("Min Address: " + hex(project.loader.main_object.mapped_base))
-    print("Offset for " + var_name + " is " + hex(var_offset[id_tup]))
     return var_offset[id_tup]

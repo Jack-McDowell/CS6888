@@ -118,10 +118,11 @@ def locals_test():
     # General Condition
     local_node = ASTNode(Operator.VAR, ["local", ExprType(Type.BV32, signed=True), funcscope])
     arg_node = ASTNode(Operator.VAR, ["arg", ExprType(Type.BV32, signed=True), funcscope])
+    next_node = ASTNode(Operator.NEXT, [local_node])
 
     cond = ASTNode(Operator.GT, [local_node, arg_node])
 
-    evt = ReturnEvent(proj.loader.find_symbol("func").rebased_addr, testscope, cond, "RETURN(func) -> local > arg")
+    evt = ReturnEvent(proj.loader.find_symbol("func").rebased_addr, funcscope, cond, "WRITE(local) -> NEXT(local) > arg")
 
     return Engine(proj, [evt])
 
@@ -176,5 +177,29 @@ def operators_test():
     check(solver, xor_zero_node.get_sym(None))
 
 
+def test_all():
+    files = [
+        "simple_read",
+        "simple_cond_read",
+        "simple_read_cond",
+        "simple_cond_read_cond",
+        "simple_cond_write_cond",
+        "simple_array_read",
+        "next_definition",
+        "locals",
+        "arrays",
+        "simple_cond_call_cond",
+        "return"
+    ]
+
+    for f in files:
+        os.system("gcc ../tests/" + f + ".c -o ../test -g -O0")
+        print("Preparing test " + f)
+        proj = angr.Project("../test")
+        invs = parse_invariants("../tests/" + f + ".c", proj)
+        Engine(proj, invs).run()
+
+    
+
 # Prepare the project
-locals_test().run()
+test_all()

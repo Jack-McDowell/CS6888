@@ -111,7 +111,6 @@ def get_var_offset(filename, function_name, var_name):
         loc_parser = LocationParser(location_lists)
 
         for CU in dwarfinfo.iter_CUs():
-            print("HERE")
             # DWARFInfo allows to iterate over the compile units contained in
             # the .debug_info section. CU is a CompileUnit object, with some
             # computed attributes (such as its offset in the section) and
@@ -179,7 +178,7 @@ def get_frame_base(filename, pc, rebased_addr):
             if isinstance(CFI, FDE):
                 decoded = CFI.get_decoded()
                 for entry in decoded.table:
-                    if entry['pc'] > target_loc and entry['pc'] < min_greater:
+                    if entry['pc'] >= target_loc and entry['pc'] < min_greater:
                         offset = entry['cfa'].offset
                         min_greater = entry['pc']
         return offset
